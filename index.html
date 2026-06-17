@@ -503,7 +503,6 @@ body {
     <button class="rf-btn" onclick="filterRisk('l',this)"><span class="rf-dot l"></span>低リスク（〜39%）</button>
   </div>
   <div class="risk-matrix" id="risk-matrix"></div>
-  <a href="#contact" class="hero-cta">akahai agentについて詳しく見る →</a>
 </div>
 
 <!-- NAV -->
@@ -588,7 +587,7 @@ body {
 <div id="s5" class="sec">
   <p class="sec-label">05 — 必要人材</p>
   <p class="sec-title">企業規模・業種によって、必要な人材は異なる</p>
-  <p class="sec-desc">同じ「マーケ人材」でも、企業規模や業種が違えば優先すべき人材像は変わります。規模別・業種別に必要な人材を確認できます。</p>
+  <p class="sec-desc">同じ「マーケ人材」でも、企業規模や業種が違えば優先すべき人材像は変わります。さらに、その優先順位自体もAIの進化に合わせて年ごとに変化します。規模別・業種別・年次で必要な人材を確認できます。</p>
 
   <div class="tabnav" id="s5tabs">
     <button class="tabnav-btn active" onclick="s5Tab('s5t1',this)">企業規模別</button>
@@ -601,6 +600,11 @@ body {
       <button class="chip active" onclick="scaleTalentChip(this,'small')">スモール（〜50名）</button>
       <button class="chip" onclick="scaleTalentChip(this,'mid')">ミドル（50〜500名）</button>
       <button class="chip" onclick="scaleTalentChip(this,'ent')">エンタープライズ（500名〜）</button>
+    </div>
+    <div class="chips" id="scalePhaseChips" style="margin-bottom:1rem">
+      <button class="chip active" onclick="scalePhaseChip(this,'now')">2026年（今）</button>
+      <button class="chip" onclick="scalePhaseChip(this,'mid')">2027〜2028年</button>
+      <button class="chip" onclick="scalePhaseChip(this,'future')">2029〜2030年</button>
     </div>
     <div id="scaleTalent-panel"></div>
   </div>
@@ -615,6 +619,11 @@ body {
       <button class="chip" onclick="indTalentChip(this,'media')">メディア・エンタメ</button>
       <button class="chip" onclick="indTalentChip(this,'retail')">リテール・小売</button>
       <button class="chip" onclick="indTalentChip(this,'med')">医療・ヘルスケア</button>
+    </div>
+    <div class="chips" id="indPhaseChips" style="margin-bottom:1rem">
+      <button class="chip active" onclick="indPhaseChip(this,'now')">2026年（今）</button>
+      <button class="chip" onclick="indPhaseChip(this,'mid')">2027〜2028年</button>
+      <button class="chip" onclick="indPhaseChip(this,'future')">2029〜2030年</button>
     </div>
     <div id="indTalent-panel"></div>
   </div>
@@ -1059,110 +1068,316 @@ function s2Tab(id,btn){
 const SCALE_TALENT = {
   small: {
     name: 'スモール（〜50名）',
-    sub: '専任マーケ担当が0〜1名という前提のもとでは、専門特化より「広く浅く動けて、AIを使いこなせる人材」が圧倒的に重要になる。',
-    roles: [
-      {rank:'最優先',role:'AIネイティブ・ジェネラリスト',desc:'広告・コンテンツ・SEO・SNS・CRMを1人でAI活用しながら回せる人材。専門性の深さより、AIツールを使って広く成果を出す実行力が重要。'},
-      {rank:'優先',role:'外部パートナーのAIマネジメント力を持つ人',desc:'代理店・フリーランスにAI前提で発注し、成果を判断できる人材。「丸投げ」から「AI込みで適正発注」に変える役割。'},
-      {rank:'必要に応じて',role:'基本的なデータ理解ができる人',desc:'広告・CRMの数字を読んで意思決定できる最低限のデータリテラシー。専任である必要はない。'}
-    ]
+    phases: {
+      now: {
+        note: '専任マーケ担当が0〜1名という前提のもとでは、専門特化より「広く浅く動けて、AIを使いこなせる人材」が圧倒的に重要になる。',
+        roles: [
+          {rank:'最優先',role:'AIネイティブ・ジェネラリスト',desc:'広告・コンテンツ・SEO・SNS・CRMを1人でAI活用しながら回せる人材。専門性の深さより、AIツールを使って広く成果を出す実行力が重要。'},
+          {rank:'優先',role:'外部パートナーのAIマネジメント力を持つ人',desc:'代理店・フリーランスにAI前提で発注し、成果を判断できる人材。「丸投げ」から「AI込みで適正発注」に変える役割。'},
+          {rank:'必要に応じて',role:'基本的なデータ理解ができる人',desc:'広告・CRMの数字を読んで意思決定できる最低限のデータリテラシー。専任である必要はない。'}
+        ]
+      },
+      mid: {
+        note: 'AIエージェントがマーケ実務の大半を担うようになり、人材の役割が「実行者」から「AIの設計・チェック者」へ移行する。外部パートナーへの依存度自体も下がっていく。',
+        roles: [
+          {rank:'最優先',role:'AIエージェントを設計・監督できるジェネラリスト',desc:'AIエージェントに何を任せ、どこを人間がチェックするかを設計できる人材。実行力よりも判断力が重要になる。'},
+          {rank:'優先',role:'顧客との関係構築に特化した人材',desc:'AIでは作れない信頼関係・対面でのコミュニケーションを担う人材。'},
+          {rank:'重要度低下',role:'外部パートナーのマネジメント要員',desc:'外注先への依存自体が減るため、調整役としての重要度はやや下がる。'}
+        ]
+      },
+      future: {
+        note: 'AIが実行の95%以上を担い、人間は「何を伝えるか」というブランド・顧客関係の意思決定のみに集中する状態になる。',
+        roles: [
+          {rank:'最優先',role:'ブランド・顧客関係の意思決定者',desc:'AIの提案を承認し、ブランドの方向性を決める役割。事業主自身がこの役割を兼ねるケースも増える。'},
+          {rank:'新たに重要',role:'AIを使いこなす経営者自身のリテラシー',desc:'専任を雇うのではなく、経営者自身がAIエージェントを指揮するスキルを持つことが前提になる。'}
+        ]
+      }
+    }
   },
   mid: {
     name: 'ミドル（50〜500名）',
-    sub: '専任1〜5名という構成で、機能ごとの専門人材を少数精鋭で揃える段階。AI活用前提のスキルが採用条件として必須になる。',
-    roles: [
-      {rank:'最優先',role:'データアナリスト（AI活用型）',desc:'広告・CRM・SEOのデータを統合的に見て、AIツールを使った分析・意思決定支援ができる人材。'},
-      {rank:'優先',role:'コンテンツストラテジスト',desc:'量産執筆ではなく、コンテンツ全体の戦略設計とAI生成物の編集監修ができる人材。'},
-      {rank:'優先',role:'広告戦略家（運用ではなく戦略）',desc:'入札はAIに任せ、予算配分とクリエイティブ方向性を判断できる人材。'},
-      {rank:'必要',role:'AI推進担当（兼務可）',desc:'社内のAI活用ガバナンス・ツール選定・浸透を主導する人材。専任である必要はないが「誰かが旗を振る」ことが重要。'}
-    ]
+    phases: {
+      now: {
+        note: '専任1〜5名という構成で、機能ごとの専門人材を少数精鋭で揃える段階。AI活用前提のスキルが採用条件として必須になる。',
+        roles: [
+          {rank:'最優先',role:'データアナリスト（AI活用型）',desc:'広告・CRM・SEOのデータを統合的に見て、AIツールを使った分析・意思決定支援ができる人材。'},
+          {rank:'優先',role:'コンテンツストラテジスト',desc:'量産執筆ではなく、コンテンツ全体の戦略設計とAI生成物の編集監修ができる人材。'},
+          {rank:'優先',role:'広告戦略家（運用ではなく戦略）',desc:'入札はAIに任せ、予算配分とクリエイティブ方向性を判断できる人材。'},
+          {rank:'必要',role:'AI推進担当（兼務可）',desc:'社内のAI活用ガバナンス・ツール選定・浸透を主導する人材。専任である必要はないが「誰かが旗を振る」ことが重要。'}
+        ]
+      },
+      mid: {
+        note: 'AI活用設計と組織変革を同時に担う人材の需要が急上昇する。職種横断でAIを使いこなす人材を束ねる役割が新たに重要になる。',
+        roles: [
+          {rank:'最優先',role:'マーケDXコンサルタント（インハウス化）',desc:'AI活用設計＋組織変革を担う人材。外部コンサルに頼らず社内に置く動きが進む。'},
+          {rank:'優先',role:'データアナリスト（モデル設計・評価型）',desc:'役割がさらに高度化し、AIモデルの設計・評価まで担うようになる。'},
+          {rank:'新設で重要',role:'AIネイティブマーケター',desc:'職種横断でAIを活用し成果を出せる人材。新しい採用カテゴリとして重要度が上がる。'},
+          {rank:'重要度低下',role:'純粋な広告オペレーション知識',desc:'戦略性は重要なままだが、入稿・運用そのものの専門知識への依存は下がる。'}
+        ]
+      },
+      future: {
+        note: '定型業務はAIが完全に担い、人間はマーケ組織全体の統括とブランド・顧客LTV戦略に集中する。',
+        roles: [
+          {rank:'最優先',role:'AI主導マーケ組織の統括人材（部長級）',desc:'AIエージェント群と人材の両方を統括し、組織全体の成果を最大化する人材。'},
+          {rank:'優先',role:'ブランド・顧客LTV戦略家',desc:'KPIがCPAからLTV・ブランド資産にシフトする中で、その戦略を描ける人材。'},
+          {rank:'新たに重要',role:'外部認定人材を見極める目利き力',desc:'「akahai認定マーケター」等の外部人材を正しく評価・採用できる人材。'}
+        ]
+      }
+    }
   },
   ent: {
     name: 'エンタープライズ（500名〜）',
-    sub: '専任5〜20名＋代理店という構成で、実務よりも戦略・ガバナンス・組織変革を担う人材が最重要になる。',
-    roles: [
-      {rank:'最優先',role:'マーケDX推進人材（CDO/CMO直下）',desc:'代理店・グループ会社を含めたAI活用ガバナンス全体を設計・推進できる人材。'},
-      {rank:'優先',role:'ブランド戦略家',desc:'AIが実行を担う時代に、ブランドの意味・一貫性を守る人材。'},
-      {rank:'優先',role:'データガバナンス担当',desc:'ファーストパーティデータの統合・AIモデルの監督・倫理面のチェックができる人材。'},
-      {rank:'必要',role:'組織変革推進人材',desc:'代理店との関係再構築、社内のAI抵抗感の解消、研修設計を担う人材。'}
-    ]
+    phases: {
+      now: {
+        note: '専任5〜20名＋代理店という構成で、実務よりも戦略・ガバナンス・組織変革を担う人材が最重要になる。',
+        roles: [
+          {rank:'最優先',role:'マーケDX推進人材（CDO/CMO直下）',desc:'代理店・グループ会社を含めたAI活用ガバナンス全体を設計・推進できる人材。'},
+          {rank:'優先',role:'ブランド戦略家',desc:'AIが実行を担う時代に、ブランドの意味・一貫性を守る人材。'},
+          {rank:'優先',role:'データガバナンス担当',desc:'ファーストパーティデータの統合・AIモデルの監督・倫理面のチェックができる人材。'},
+          {rank:'必要',role:'組織変革推進人材',desc:'代理店との関係再構築、社内のAI抵抗感の解消、研修設計を担う人材。'}
+        ]
+      },
+      mid: {
+        note: '複数のAIエージェントを統括管理する課題が顕在化し、リスク管理・倫理監督の専門性が急上昇する。中間管理職的なオペレーション監督の重要度は下がる。',
+        roles: [
+          {rank:'最優先',role:'AIガバナンス・倫理監督人材',desc:'複数AIエージェントの統括管理・リスク管理を専門に担う人材。新たに不可欠なポジションになる。'},
+          {rank:'優先',role:'グループ横断のデータ統合人材',desc:'グループ会社・ブランド間でのファーストパーティデータ統合を推進する人材。'},
+          {rank:'重要度低下',role:'オペレーション監督の中間管理職',desc:'AIが定型業務を吸収するため、管理対象自体が縮小する。'}
+        ]
+      },
+      future: {
+        note: '意思決定の速さがエンタープライズの弱点になりうる中、データとブランドという資産をAIで最大活用できた企業のみが優位に立つ。',
+        roles: [
+          {rank:'最優先',role:'AI×ブランド×データの統合戦略人材（経営直下）',desc:'3つの資産を統合して経営判断に落とし込める少数精鋭の戦略チームが企業の競争力を左右する。'},
+          {rank:'優先',role:'グローバル展開・新市場開拓人材',desc:'国内で確立したAI活用モデルを新市場に展開できる人材。'}
+        ]
+      }
+    }
   }
 };
 
 const IND_TALENT = {
   ec: {
     name: 'EC・D2C',
-    sub: '広告運用・入稿はAIに置き換わりやすいため、人間が担うべきは商品とブランドの設計、そして顧客理解。',
-    roles: [
-      {rank:'最優先',role:'CRMマーケター（パーソナライゼーション型）',desc:'AIが回すメール配信・LTV予測の精度を上げるための、顧客理解とシナリオ設計ができる人材。'},
-      {rank:'優先',role:'データアナリスト',desc:'購買データを統合的に見て、AIの提案を評価・改善できる人材。'},
-      {rank:'優先',role:'ブランド・商品企画人材',desc:'ROAS思考から脱却し、ブランド価値と商品自体の差別化を設計する人材。'}
-    ]
+    phases: {
+      now: {
+        note: '広告運用・入稿はAIに置き換わりやすいため、人間が担うべきは商品とブランドの設計、そして顧客理解。',
+        roles: [
+          {rank:'最優先',role:'CRMマーケター（パーソナライゼーション型）',desc:'AIが回すメール配信・LTV予測の精度を上げるための、顧客理解とシナリオ設計ができる人材。'},
+          {rank:'優先',role:'データアナリスト',desc:'購買データを統合的に見て、AIの提案を評価・改善できる人材。'},
+          {rank:'優先',role:'ブランド・商品企画人材',desc:'ROAS思考から脱却し、ブランド価値と商品自体の差別化を設計する人材。'}
+        ]
+      },
+      mid: {
+        note: 'AIが個客単位でのパーソナライゼーション判断を担うようになり、その精度を上げ品質を監督する人材の重要度が急上昇する。',
+        roles: [
+          {rank:'最優先',role:'AIパーソナライゼーション統括人材',desc:'LTV予測・個客単位の判断をAIが行う中で、その精度と品質を監督・改善する人材。'},
+          {rank:'優先',role:'ブランド・商品企画人材',desc:'継続して重要。差別化の源泉として価値が高まる。'},
+          {rank:'新たに重要',role:'AI自律運用の品質監督人材',desc:'AIが自動生成・自動配信する施策のブランド整合性をチェックする人材。'}
+        ]
+      },
+      future: {
+        note: 'AIエージェントが広告・コンテンツ・CRM・SEOを24時間自律運用する中、人間はブランドと顧客の関係そのものの設計に特化する。',
+        roles: [
+          {rank:'最優先',role:'ブランド・顧客関係の意思決定者',desc:'AIの提案を承認し、ブランドが顧客に与える意味を決定する役割。'},
+          {rank:'優先',role:'商品開発×AIインサイト活用人材',desc:'AIが見出した顧客インサイトを商品開発に直結させる人材。'},
+          {rank:'大幅縮小',role:'実行系のCRM運用人材',desc:'AIの完全自律化により、運用そのものを担う人材の需要は大きく減る。'}
+        ]
+      }
+    }
   },
   saas: {
     name: 'BtoB SaaS',
-    sub: 'リード獲得の自動化が進む中、専門性の高いコンテンツと営業との連携設計が差別化要因になる。',
-    roles: [
-      {rank:'最優先',role:'コンテンツストラテジスト（Thought Leadership型）',desc:'AI生成が前提化する中、専門家としての一次情報・独自視点を発信できる人材。'},
-      {rank:'優先',role:'ABM／データ人材',desc:'ターゲット企業のシグナルを分析し、AIの提案を営業に橋渡しできる人材。'},
-      {rank:'優先',role:'マーケDXコンサルタント的な人材',desc:'マーケとプロダクト・営業を横断して顧客体験を設計できる人材。'}
-    ]
+    phases: {
+      now: {
+        note: 'リード獲得の自動化が進む中、専門性の高いコンテンツと営業との連携設計が差別化要因になる。',
+        roles: [
+          {rank:'最優先',role:'コンテンツストラテジスト（Thought Leadership型）',desc:'AI生成が前提化する中、専門家としての一次情報・独自視点を発信できる人材。'},
+          {rank:'優先',role:'ABM／データ人材',desc:'ターゲット企業のシグナルを分析し、AIの提案を営業に橋渡しできる人材。'},
+          {rank:'優先',role:'マーケDXコンサルタント的な人材',desc:'マーケとプロダクト・営業を横断して顧客体験を設計できる人材。'}
+        ]
+      },
+      mid: {
+        note: 'AIによるシグナル検知の精度が上がるほど、営業との連携設計とプロダクト主導の成長設計の重要度が増す。',
+        roles: [
+          {rank:'最優先',role:'ABM×AIシグナル検知の統括人材',desc:'AIが検知した商談タイミングを営業に正しく橋渡しする設計を担う人材。'},
+          {rank:'優先',role:'Thought Leadership人材',desc:'継続して強化すべき領域。AI時代に独自視点の価値がさらに高まる。'},
+          {rank:'新たに重要',role:'プロダクトレッドグロース（PLG）設計人材',desc:'マーケとプロダクト体験を統合して成長を設計する人材。'}
+        ]
+      },
+      future: {
+        note: 'AIが市場参入・競合対策まで提案するようになり、マーケ部門はAI専門家×ビジネス専門家の少数精鋭に集約される。',
+        roles: [
+          {rank:'最優先',role:'GTM戦略×AI統合人材',desc:'AIが提案する市場参入戦略を評価し、事業判断に落とし込める人材。'},
+          {rank:'優先',role:'カスタマーサクセス融合人材',desc:'マーケとCSの境界が溶ける中で、顧客体験全体を設計する人材。'},
+          {rank:'大幅縮小',role:'リード獲得実務人材',desc:'AIが自律的に担うため、実務としての需要は大きく減る。'}
+        ]
+      }
+    }
   },
   fmcg: {
     name: '消費財・FMCG',
-    sub: '代理店依存度が高く、AI活用は代理店経由で進むため、社内には代理店をマネジメントしAI活用を評価できる人材が必要。',
-    roles: [
-      {rank:'最優先',role:'ブランドマネージャー（AI活用評価型）',desc:'代理店が提案するAI活用クリエイティブを評価・判断できる人材。'},
-      {rank:'優先',role:'リテールメディア専門人材',desc:'小売チェーンとのデータ連携・パーソナライゼーション施策を担う人材。'},
-      {rank:'優先',role:'コンシューマーインサイト人材',desc:'AIが収集したインサイトを解釈し、ブランド戦略に変換する人材。'}
-    ]
+    phases: {
+      now: {
+        note: '代理店依存度が高く、AI活用は代理店経由で進むため、社内には代理店をマネジメントしAI活用を評価できる人材が必要。',
+        roles: [
+          {rank:'最優先',role:'ブランドマネージャー（AI活用評価型）',desc:'代理店が提案するAI活用クリエイティブを評価・判断できる人材。'},
+          {rank:'優先',role:'リテールメディア専門人材',desc:'小売チェーンとのデータ連携・パーソナライゼーション施策を担う人材。'},
+          {rank:'優先',role:'コンシューマーインサイト人材',desc:'AIが収集したインサイトを解釈し、ブランド戦略に変換する人材。'}
+        ]
+      },
+      mid: {
+        note: '小売との連携が深化し、AI生成クリエイティブの量が増える中で品質管理の専門性が新たに求められる。',
+        roles: [
+          {rank:'最優先',role:'リテールメディア×データ統合人材',desc:'小売との連携がさらに深化し、データ統合の専門性が重要になる。'},
+          {rank:'優先',role:'代理店のAI活用を評価できる人材',desc:'継続して重要。代理店のAI提案レベルが上がる分、評価力も高度化が必要。'},
+          {rank:'新たに重要',role:'AI生成クリエイティブの品質管理人材',desc:'TV CM以外の大半がAI生成になる中、品質とブランド整合性を管理する人材。'}
+        ]
+      },
+      future: {
+        note: '媒体買付・運用の実務はAIが主導し、人間はブランドが社会にとって持つ意味を管理する役割に特化する。',
+        roles: [
+          {rank:'最優先',role:'ブランドエクイティ管理人材',desc:'AIが実行を担う中で、ブランドの「意味」を守り続ける人材。'},
+          {rank:'優先',role:'消費者コミュニケーション戦略家',desc:'AIが個別最適化する中で、全体としてのブランド一貫性を設計する人材。'},
+          {rank:'大幅縮小',role:'媒体買付・運用の実務人材',desc:'AIが主導するため実務人材としての需要は大きく減る。'}
+        ]
+      }
+    }
   },
   fin: {
     name: '金融・保険',
-    sub: '規制対応とAI活用の両立が必要なため、コンプライアンスとマーケを両方理解する人材が決定的に重要。',
-    roles: [
-      {rank:'最優先',role:'リーガルマーケター（コンプライアンス×AI）',desc:'金融商品広告規制とAI生成コンテンツの審査を両立できる人材。'},
-      {rank:'優先',role:'CRM専門人材',desc:'規制の範囲内でパーソナライゼーション設計ができる人材。'},
-      {rank:'優先',role:'デジタル広告×規制対応人材',desc:'AI自動化が進む広告運用を、規制の範囲内で管理できる人材。'}
-    ]
+    phases: {
+      now: {
+        note: '規制対応とAI活用の両立が必要なため、コンプライアンスとマーケを両方理解する人材が決定的に重要。',
+        roles: [
+          {rank:'最優先',role:'リーガルマーケター（コンプライアンス×AI）',desc:'金融商品広告規制とAI生成コンテンツの審査を両立できる人材。'},
+          {rank:'優先',role:'CRM専門人材',desc:'規制の範囲内でパーソナライゼーション設計ができる人材。'},
+          {rank:'優先',role:'デジタル広告×規制対応人材',desc:'AI自動化が進む広告運用を、規制の範囲内で管理できる人材。'}
+        ]
+      },
+      mid: {
+        note: 'AI生成コンテンツへの法規制対応そのものが専門領域として確立し、法務とマーケの橋渡し役の重要度が増す。',
+        roles: [
+          {rank:'最優先',role:'AI審査・コンプライアンス統括人材',desc:'AI生成コンテンツの法規制対応を専門に統括する人材。'},
+          {rank:'優先',role:'パーソナライズドCRMの設計人材',desc:'規制対応済みの範囲でのパーソナライゼーション設計を担う人材。'},
+          {rank:'新たに重要',role:'AI×法務の橋渡し人材',desc:'技術側と法務側の両方を理解し、実装可能な形に落とし込める人材。'}
+        ]
+      },
+      future: {
+        note: 'デジタルマーケの実行業務はAI化が完了し、人間は規制理解と顧客との信頼関係構築に特化する。',
+        roles: [
+          {rank:'最優先',role:'規制理解×デジタル×顧客コミュニケーションの統合人材',desc:'3つの専門性を統合できる人材が金融マーケの中核を担う。'},
+          {rank:'優先',role:'顧客信頼構築の専門家',desc:'金融という性質上、AIでは置き換えられない信頼関係構築の専門人材。'},
+          {rank:'大幅縮小',role:'定型デジタル広告運用人材',desc:'規制対応込みでAI化が完了するため、実務人材の需要は大きく減る。'}
+        ]
+      }
+    }
   },
   media: {
     name: 'メディア・エンタメ',
-    sub: 'AI生成コンテンツが溢れる中、人間がやるべきは「AIが作れないもの」の創造とディレクション。',
-    roles: [
-      {rank:'最優先',role:'クリエイティブディレクター（AI活用型）',desc:'AIを使いこなしながら独自の視点・体験を作れる人材。'},
-      {rank:'優先',role:'コミュニティマネージャー',desc:'ファンとの関係性・帰属感を設計する人材。'},
-      {rank:'優先',role:'編集・監修人材（専門知識型）',desc:'AI生成コンテンツの品質・正確性を担保する人材。'}
-    ]
+    phases: {
+      now: {
+        note: 'AI生成コンテンツが溢れる中、人間がやるべきは「AIが作れないもの」の創造とディレクション。',
+        roles: [
+          {rank:'最優先',role:'クリエイティブディレクター（AI活用型）',desc:'AIを使いこなしながら独自の視点・体験を作れる人材。'},
+          {rank:'優先',role:'コミュニティマネージャー',desc:'ファンとの関係性・帰属感を設計する人材。'},
+          {rank:'優先',role:'編集・監修人材（専門知識型）',desc:'AI生成コンテンツの品質・正確性を担保する人材。'}
+        ]
+      },
+      mid: {
+        note: 'AIが初稿・素材・編集を担う「共創」モデルが定着し、AIをディレクションできる能力が必須スキルになる。',
+        roles: [
+          {rank:'最優先',role:'AI×人間の共創ディレクター',desc:'AIが生成した素材を編集・統合し、最終的な表現に仕上げられる人材。'},
+          {rank:'優先',role:'コミュニティ設計人材',desc:'継続して重要性が高まる。ファン基盤がメディアの収益源として重要になる。'},
+          {rank:'縮小',role:'量産型編集・ライター人材',desc:'AI生成が標準化するため、量産系の実務需要は縮小する。'}
+        ]
+      },
+      future: {
+        note: '情報量・速度はAIが圧倒するため、人間の価値は信頼性・独自視点・コミュニティ帰属感に集約される。',
+        roles: [
+          {rank:'最優先',role:'信頼・独自視点を持つクリエイター',desc:'「誰が作ったか」が価値の核になる時代の、著名性・専門性を持つクリエイター。'},
+          {rank:'優先',role:'コミュニティ・プラットフォーム運営人材',desc:'メディアがコミュニティそのものとして機能するための運営人材。'},
+          {rank:'大幅縮小',role:'情報発信の実務人材全般',desc:'AIが情報生成の大半を担うため、実務系人材の需要は大きく減る。'}
+        ]
+      }
+    }
   },
   retail: {
     name: 'リテール・小売',
-    sub: 'EC・店舗・データが統合されていく中、デジタルとリアルの両方を理解する人材が必要。',
-    roles: [
-      {rank:'最優先',role:'OMO設計人材',desc:'オンラインとオフラインの顧客体験を統合的に設計できる人材。'},
-      {rank:'優先',role:'CRM／パーソナライゼーション専門人材',desc:'購買データを活用したプロモーション設計ができる人材。'},
-      {rank:'優先',role:'店舗体験設計人材',desc:'AIでは代替できない「なぜこの店に来るのか」を設計する人材。'}
-    ]
+    phases: {
+      now: {
+        note: 'EC・店舗・データが統合されていく中、デジタルとリアルの両方を理解する人材が必要。',
+        roles: [
+          {rank:'最優先',role:'OMO設計人材',desc:'オンラインとオフラインの顧客体験を統合的に設計できる人材。'},
+          {rank:'優先',role:'CRM／パーソナライゼーション専門人材',desc:'購買データを活用したプロモーション設計ができる人材。'},
+          {rank:'優先',role:'店舗体験設計人材',desc:'AIでは代替できない「なぜこの店に来るのか」を設計する人材。'}
+        ]
+      },
+      mid: {
+        note: 'AIパーソナライゼーションと店舗体験の統合設計が課題になり、店舗スタッフのAI活用支援も新たに重要になる。',
+        roles: [
+          {rank:'最優先',role:'AIパーソナライゼーション×店舗体験の統合設計人材',desc:'デジタルとリアルの顧客体験を一体として設計できる人材。'},
+          {rank:'優先',role:'地域コミュニティ設計人材',desc:'店舗を地域コミュニティの拠点として機能させる設計力。'},
+          {rank:'新たに重要',role:'スタッフのAI活用支援人材',desc:'店舗スタッフがAIアシスタントを使いこなせるよう支援する人材。'}
+        ]
+      },
+      future: {
+        note: 'デジタル接点の最適化はAIが完全に担い、人間は体験・地域コミュニティ・信頼という最後の差別化軸に特化する。',
+        roles: [
+          {rank:'最優先',role:'体験・地域コミュニティ・信頼の設計者',desc:'「なぜこの店に来るのか」を設計する、小売マーケの最終的な価値の核。'},
+          {rank:'優先',role:'OMO戦略の統括人材',desc:'デジタルとリアルの統合戦略を経営レベルで統括する人材。'},
+          {rank:'大幅縮小',role:'実行系のプロモーション運用人材',desc:'AIが最適化を完全に担うため、実務人材の需要は大きく減る。'}
+        ]
+      }
+    }
   },
   med: {
     name: '医療・ヘルスケア',
-    sub: '規制と専門知識の両方が必須のため、人材の代替可能性が他業種より低く、専門人材の確保が最重要課題。',
-    roles: [
-      {rank:'最優先',role:'専門知識×コンテンツ監修人材',desc:'医師・薬剤師等の専門家、または専門知識を理解した上でAI生成物を監修できる人材。'},
-      {rank:'優先',role:'医療広告コンプライアンス人材',desc:'薬機法・医療広告ガイドラインの専門知識を持つ人材。'},
-      {rank:'優先',role:'患者コミュニケーション設計人材',desc:'AIが踏み込めない、医療における信頼関係の構築を担う人材。'}
-    ]
+    phases: {
+      now: {
+        note: '規制と専門知識の両方が必須のため、人材の代替可能性が他業種より低く、専門人材の確保が最重要課題。',
+        roles: [
+          {rank:'最優先',role:'専門知識×コンテンツ監修人材',desc:'医師・薬剤師等の専門家、または専門知識を理解した上でAI生成物を監修できる人材。'},
+          {rank:'優先',role:'医療広告コンプライアンス人材',desc:'薬機法・医療広告ガイドラインの専門知識を持つ人材。'},
+          {rank:'優先',role:'患者コミュニケーション設計人材',desc:'AIが踏み込めない、医療における信頼関係の構築を担う人材。'}
+        ]
+      },
+      mid: {
+        note: 'AI生成コンテンツの医学的監修体制を統括する役割と、AI×医療規制の専門家への需要が新たに高まる。',
+        roles: [
+          {rank:'最優先',role:'AI生成コンテンツの医学的監修統括人材',desc:'専門家監修フローそのものを設計・統括する人材。'},
+          {rank:'優先',role:'パーソナライズドCRM（同意管理込み）設計人材',desc:'プライバシーを徹底した上でのパーソナライゼーション設計を担う人材。'},
+          {rank:'新たに重要',role:'AI×医療規制の専門家',desc:'医療広告ガイドライン対応の専門AIを正しく運用できる人材。'}
+        ]
+      },
+      future: {
+        note: '情報提供・予防啓発のデジタルマーケはAI主導になるが、患者との信頼関係構築・専門的アドバイスは人間専門家が担い続ける。',
+        roles: [
+          {rank:'最優先（継続）',role:'患者との信頼関係構築の専門家',desc:'医療という性質上、AI時代でも変わらず最重要な人材像。'},
+          {rank:'優先',role:'医療×AI×マーケを理解する統合人材',desc:'3つの専門性を統合できる希少な人材。'},
+          {rank:'縮小',role:'基本的な情報発信実務人材',desc:'AI生成・配信が前提化するため、実務系の需要はやや縮小する。'}
+        ]
+      }
+    }
   }
 };
 
 function rankBadge(rank){
-  if(rank==='最優先') return 'bd-r';
-  if(rank==='優先') return 'bd-y';
-  return 'bd-g';
+  if(rank.indexOf('最優先')===0) return 'bd-r';
+  if(rank==='優先'||rank==='必要') return 'bd-y';
+  if(rank.indexOf('縮小')>=0||rank.indexOf('重要度低下')>=0) return 'bd-g';
+  return 'bd-p';
 }
 
-function renderScaleTalent(key){
-  const d = SCALE_TALENT[key];
-  const rolesHtml = d.roles.map(r=>`
+let currentScaleKey = 'small';
+let currentScalePhase = 'now';
+let currentIndKey = 'ec';
+let currentIndPhase = 'now';
+
+function renderScaleTalent(){
+  const d = SCALE_TALENT[currentScaleKey];
+  const p = d.phases[currentScalePhase];
+  const rolesHtml = p.roles.map(r=>`
     <div class="card" style="margin-bottom:.6rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <p class="card-title" style="margin:0">${r.role}</p>
@@ -1171,13 +1386,14 @@ function renderScaleTalent(key){
       <p class="card-body">${r.desc}</p>
     </div>`).join('');
   document.getElementById('scaleTalent-panel').innerHTML = `
-    <p class="card-body" style="margin-bottom:1rem">${d.sub}</p>
+    <p class="card-body" style="margin-bottom:1rem">${p.note}</p>
     ${rolesHtml}`;
 }
 
-function renderIndTalent(key){
-  const d = IND_TALENT[key];
-  const rolesHtml = d.roles.map(r=>`
+function renderIndTalent(){
+  const d = IND_TALENT[currentIndKey];
+  const p = d.phases[currentIndPhase];
+  const rolesHtml = p.roles.map(r=>`
     <div class="card" style="margin-bottom:.6rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <p class="card-title" style="margin:0">${r.role}</p>
@@ -1186,20 +1402,36 @@ function renderIndTalent(key){
       <p class="card-body">${r.desc}</p>
     </div>`).join('');
   document.getElementById('indTalent-panel').innerHTML = `
-    <p class="card-body" style="margin-bottom:1rem">${d.sub}</p>
+    <p class="card-body" style="margin-bottom:1rem">${p.note}</p>
     ${rolesHtml}`;
 }
 
 function scaleTalentChip(btn,key){
   btn.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
   btn.classList.add('active');
-  renderScaleTalent(key);
+  currentScaleKey = key;
+  renderScaleTalent();
+}
+
+function scalePhaseChip(btn,phase){
+  btn.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  currentScalePhase = phase;
+  renderScaleTalent();
 }
 
 function indTalentChip(btn,key){
   btn.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
   btn.classList.add('active');
-  renderIndTalent(key);
+  currentIndKey = key;
+  renderIndTalent();
+}
+
+function indPhaseChip(btn,phase){
+  btn.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  currentIndPhase = phase;
+  renderIndTalent();
 }
 
 function s5Tab(id,btn){
@@ -1666,8 +1898,8 @@ buildChips();
 renderS1(JOBS[0].k);
 renderS2(JOBS[0].k);
 renderMarket('world');
-renderScaleTalent('small');
-renderIndTalent('ec');
+renderScaleTalent();
+renderIndTalent();
 scaleChip(document.querySelector('#s3 .chip'),SZ,'small');
 document.querySelector('#s3 .chip').classList.add('active');
 document.querySelector('#s4 .chip').classList.add('active');
