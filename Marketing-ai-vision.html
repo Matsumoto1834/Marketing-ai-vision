@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>akahai agent × AI代替影響分析 2025-2030</title>
+<style>
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f7f5;
+  --bg-tertiary: #f0efec;
+  --text-primary: #1a1a18;
+  --text-secondary: #6b6b67;
+  --text-tertiary: #9b9b95;
+  --border-weak: rgba(0,0,0,0.08);
+  --border-mid: rgba(0,0,0,0.18);
+  --border-strong: rgba(0,0,0,0.28);
+  --danger-bg: #fcebeb;
+  --danger-text: #a32d2d;
+  --warning-bg: #faeeda;
+  --warning-text: #854f0b;
+  --success-bg: #eaf3de;
+  --success-text: #3b6d11;
+  --info-bg: #e6f1fb;
+  --info-text: #185fa5;
+  --brand: #534AB7;
+  --brand-light: #EEEDFE;
+  --brand-dark: #3C3489;
+  --brand-text: #26215C;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --font: system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 860px;
+  margin: 2rem auto;
+  background: var(--bg-primary);
+  border: 0.5px solid var(--border-weak);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+}
+
+/* ========== HERO ========== */
+.hero {
+  padding: 2.5rem 2rem 2rem;
+  border-bottom: 0.5px solid var(--border-weak);
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: .8rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand);
+}
+.hero h1 {
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.25;
+  margin-bottom: .6rem;
+}
+.hero h1 .accent { color: var(--brand); }
+.hero-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.4rem;
+  max-width: 520px;
+}
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .5rem;
+  margin-bottom: 1.4rem;
+}
+.hstat {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: .7rem .8rem;
+}
+.hstat-n { font-size: 22px; font-weight: 500; }
+.hstat-l { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+.risk-filter {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+}
+.rf-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 0.5px solid var(--border-mid);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .13s;
+}
+.rf-btn:hover, .rf-btn.active {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+}
+.rf-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.rf-dot.h { background: #E24B4A; }
+.rf-dot.m { background: #BA7517; }
+.rf-dot.l { background: #3B6D11; }
+
+.risk-matrix { margin-bottom: 1.4rem; }
+.rm-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 5px;
+}
+.rm-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  width: 110px;
+  flex-shrink: 0;
+  text-align: right;
+  padding-right: 10px;
+  line-height: 1.3;
+}
+.rm-bar-wrap { flex: 1; display: flex; align-items: center; gap: 7px; }
+.rm-track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.rm-fill { height: 100%; border-radius: 4px; }
+.rm-pct { font-size: 11px; font-weight: 500; width: 32px; text-align: right; flex-shrink: 0; }
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brand);
+  color: var(--brand-light);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: .6rem 1.2rem;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font);
+  text-decoration: none;
+  transition: background .13s;
+}
+.hero-cta:hover { background: var(--brand-dark); }
+
+/* ========== NAV ========== */
+.lp-nav {
+  display: flex;
+  border-bottom: 0.5px solid var(--border-weak);
+  overflow-x: auto;
+  background: var(--bg-secondary);
+  -webkit-overflow-scrolling: touch;
+}
+.nav-btn {
+  padding: .7rem 1rem;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-family: var(--font);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: color .12s;
+}
+.nav-btn:hover { color: var(--text-primary); }
+.nav-btn.active { color: var(--text-primary); border-bottom-color: var(--brand); font-weight: 500; }
+.nav-num {
+  font-size: 10px;
+  background: var(--brand-light);
+  color: var(--brand);
+  border-radius: 20px;
+  padding: 1px 5px;
+}
+
+/* ========== SECTIONS ========== */
+.sec { display: none; padding: 1.5rem 2rem; }
+.sec.active { display: block; }
+
+.sec-label {
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin-bottom: .3rem;
+  font-weight: 500;
+}
+.sec-title { font-size: 18px; font-weight: 500; margin-bottom: .3rem; }
+.sec-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.2rem; }
+
+/* ========== CHIPS ========== */
+.chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 1.2rem; }
+.chip {
+  font-size: 12px;
+  padding: 4px 11px;
+  border-radius: 20px;
+  border: 0.5px solid var(--border-mid);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .12s;
+  white-space: nowrap;
+}
+.chip:hover { color: var(--text-primary); border-color: var(--border-strong); }
+.chip.active { background: var(--brand); color: var(--brand-light); border-color: var(--brand); }
+
+/* ========== CARDS ========== */
+.card {
+  background: var(--bg-primary);
+  border: 0.5px solid var(--border-weak);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem;
+  margin-bottom: .8rem;
+}
+.card-title { font-size: 13px; font-weight: 500; margin-bottom: .6rem; }
+.card-body { font-size: 12px; color: var(--text-secondary); line-height: 1.7; }
+
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+.g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: .8rem; }
+
+.srow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 0.5px solid var(--border-weak);
+  font-size: 12px;
+}
+.srow:last-child { border-bottom: none; }
+.sl { color: var(--text-secondary); }
+.sv { font-weight: 500; }
+
+/* ========== RISK BAR ========== */
+.rbar-wrap { margin: .5rem 0; }
+.rbar-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 3px;
+}
+.rbar-track {
+  height: 6px;
+  background: var(--bg-secondary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.rbar-fill { height: 100%; border-radius: 3px; }
+.fh { background: #E24B4A; }
+.fm { background: #BA7517; }
+.fl { background: #3B6D11; }
+
+/* ========== TASK LISTS ========== */
+.tlist { list-style: none; }
+.tlist li {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 3px 0 3px 12px;
+  position: relative;
+  line-height: 1.5;
+}
+.tlist li::before { content: '·'; position: absolute; left: 3px; color: var(--text-tertiary); }
+.tlabel {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin: .7rem 0 .3rem;
+}
+.inc { color: var(--info-text); }
+.dec { color: var(--danger-text); }
+.rem { color: var(--success-text); }
+
+/* ========== TIMELINE ========== */
+.ytl { position: relative; padding-left: 1.2rem; }
+.ytl::before {
+  content: '';
+  position: absolute;
+  left: 5px; top: 8px; bottom: 8px;
+  width: 0.5px;
+  background: var(--border-mid);
+}
+.ytl-item { position: relative; margin-bottom: 1.1rem; }
+.ytl-dot {
+  position: absolute;
+  left: -1.2rem; top: 4px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  border: 0.5px solid var(--border-strong);
+  background: var(--bg-primary);
+}
+.ytl-dot.now { background: var(--brand); border-color: var(--brand); }
+.ytl-year { font-size: 11px; font-weight: 500; color: var(--brand); margin-bottom: .2rem; }
+.ytl-head { font-size: 13px; font-weight: 500; margin-bottom: .2rem; line-height: 1.4; }
+.ytl-text { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+/* ========== BADGES ========== */
+.badge {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 500;
+  margin-left: 6px;
+}
+.bd-r { background: var(--danger-bg); color: var(--danger-text); }
+.bd-y { background: var(--warning-bg); color: var(--warning-text); }
+.bd-g { background: var(--success-bg); color: var(--success-text); }
+
+/* ========== INSIGHT ========== */
+.insight {
+  background: var(--brand-light);
+  border-left: 3px solid var(--brand);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: .9rem 1rem;
+  margin-bottom: .9rem;
+}
+.insight-title { font-size: 12px; font-weight: 500; color: var(--brand-dark); margin-bottom: .3rem; }
+.insight-body { font-size: 12px; color: var(--brand-dark); line-height: 1.6; }
+
+/* ========== PHASE CARDS ========== */
+.phase-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: .6rem;
+  margin-bottom: 1.2rem;
+}
+.phase-card {
+  border: 0.5px solid var(--border-weak);
+  border-radius: var(--radius-md);
+  padding: .8rem;
+  background: var(--bg-primary);
+}
+.phase-num { font-size: 11px; font-weight: 500; color: var(--brand); margin-bottom: .3rem; }
+.phase-title { font-size: 12px; font-weight: 500; margin-bottom: .3rem; }
+.phase-body { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+
+/* ========== CTA BLOCK ========== */
+.cta-block {
+  background: var(--brand-light);
+  border: 0.5px solid #AFA9EC;
+  border-radius: var(--radius-lg);
+  padding: 1.4rem;
+  margin-top: 1.5rem;
+  text-align: center;
+}
+.cta-title { font-size: 16px; font-weight: 500; color: var(--brand-text); margin-bottom: .4rem; }
+.cta-sub { font-size: 13px; color: var(--brand); margin-bottom: 1rem; line-height: 1.5; }
+
+/* ========== TAB2 (sub-tabs inside section) ========== */
+.tabnav {
+  display: flex;
+  border-bottom: 0.5px solid var(--border-weak);
+  overflow-x: auto;
+  margin-bottom: 1.2rem;
+}
+.tabnav-btn {
+  padding: .6rem .9rem;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-family: var(--font);
+  transition: color .12s;
+}
+.tabnav-btn:hover { color: var(--text-primary); }
+.tabnav-btn.active { color: var(--text-primary); border-bottom-color: var(--brand); font-weight: 500; }
+.tabpanel { display: none; }
+.tabpanel.active { display: block; }
+
+.bd-p { background: var(--brand-light); color: var(--brand); }
+.bd-b { background: var(--info-bg); color: var(--info-text); }
+
+.warn-block {
+  background: var(--warning-bg);
+  border-left: 3px solid var(--warning-text);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: .9rem 1rem;
+  margin-bottom: .9rem;
+}
+.warn-title { font-size: 12px; font-weight: 500; color: var(--warning-text); margin-bottom: .3rem; }
+.warn-body { font-size: 12px; color: var(--warning-text); line-height: 1.6; }
+
+.arrow-row { display: flex; align-items: center; gap: 8px; margin: 1rem 0; }
+.arrow-from {
+  flex: 1;
+  padding: .7rem .9rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.arrow-to {
+  flex: 1;
+  padding: .7rem .9rem;
+  background: var(--brand-light);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  color: var(--brand-dark);
+  font-weight: 500;
+}
+.arrow-tag { font-size: 10px; color: var(--text-tertiary); margin-bottom: 4px; }
+.arrow-tag-to { font-size: 10px; color: var(--brand); margin-bottom: 4px; }
+.arrow-icon { color: var(--text-tertiary); flex-shrink: 0; font-size: 16px; }
+
+.meter-row { display: flex; align-items: center; gap: 6px; margin: 4px 0 .6rem; }
+.meter-label { font-size: 11px; color: var(--text-secondary); width: 90px; flex-shrink: 0; }
+.meter-track { flex: 1; height: 5px; background: var(--bg-secondary); border-radius: 3px; overflow: hidden; }
+.meter-fill { height: 100%; border-radius: 3px; }
+
+.stat-grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin-bottom: 1.2rem; }
+.statc { background: var(--bg-secondary); border-radius: var(--radius-md); padding: .7rem .8rem; text-align: center; }
+.statc-n { font-size: 20px; font-weight: 500; }
+.statc-l { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+.action-line { display: flex; gap: 6px; margin-bottom: 4px; align-items: flex-start; }
+.action-arrow { color: var(--brand); flex-shrink: 0; }
+.action-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.kv-line { display: flex; gap: 6px; align-items: flex-start; margin-bottom: .5rem; }
+.kv-tag { flex-shrink: 0; margin-top: 1px; }
+.kv-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+.blk { margin-bottom: 1rem; }
+.blk:last-child { margin-bottom: 0; }
+.blklabel { font-size: 11px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: var(--brand); margin-bottom: .4rem; }
+.tagp { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--bg-secondary); color: var(--text-secondary); border: 0.5px solid var(--border-weak); }
+.milerow { display: flex; gap: 6px; margin-bottom: 4px; align-items: flex-start; }
+.milemark { color: var(--brand); flex-shrink: 0; }
+.miletext { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.kicker { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; margin-bottom: .5rem; background: var(--brand-light); color: var(--brand); }
+
+@media (max-width: 600px) {
+  .stat-grid4 { grid-template-columns: 1fr 1fr; }
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 600px) {
+  .container { margin: 0; border-radius: 0; border: none; }
+  .hero-stats { grid-template-columns: 1fr 1fr; }
+  .g2, .g3 { grid-template-columns: 1fr; }
+  .hero { padding: 1.5rem 1rem; }
+  .sec { padding: 1.2rem 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HERO -->
+<div class="hero">
+  <p class="eyebrow"><span class="eyebrow-dot"></span>akahai agent — 戦略分析レポート 2025</p>
+  <h1>マーケターの仕事は、<br><span class="accent">どこまでAIに変わるのか。</span></h1>
+  <p class="hero-sub">13職種 × 企業規模 × 7業種を横断した2030年ロードマップ。AIが代替する業務・残す業務・求められる人材像を年次で可視化します。</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n">13</div><div class="hstat-l">分析対象職種</div></div>
+    <div class="hstat"><div class="hstat-n">90%</div><div class="hstat-l">最高AI代替率</div></div>
+    <div class="hstat"><div class="hstat-n">25%</div><div class="hstat-l">最低AI代替率</div></div>
+    <div class="hstat"><div class="hstat-n">2030</div><div class="hstat-l">分析ホライズン</div></div>
+  </div>
+  <div class="risk-filter">
+    <button class="rf-btn active" onclick="filterRisk('all',this)"><span class="rf-dot" style="background:#888"></span>全職種</button>
+    <button class="rf-btn" onclick="filterRisk('h',this)"><span class="rf-dot h"></span>高リスク（75%+）</button>
+    <button class="rf-btn" onclick="filterRisk('m',this)"><span class="rf-dot m"></span>中リスク（40〜74%）</button>
+    <button class="rf-btn" onclick="filterRisk('l',this)"><span class="rf-dot l"></span>低リスク（〜39%）</button>
+  </div>
+  <div class="risk-matrix" id="risk-matrix"></div>
+  <a href="#contact" class="hero-cta">akahai agentについて詳しく見る →</a>
+</div>
+
+<!-- NAV -->
+<nav class="lp-nav">
+  <button class="nav-btn active" onclick="showSec('s1',this)"><span class="nav-num">01</span>職種別AI代替</button>
+  <button class="nav-btn" onclick="showSec('s2',this)"><span class="nav-num">02</span>年次ロードマップ</button>
+  <button class="nav-btn" onclick="showSec('s3',this)"><span class="nav-num">03</span>企業規模別</button>
+  <button class="nav-btn" onclick="showSec('s4',this)"><span class="nav-num">04</span>業種別</button>
+  <button class="nav-btn" onclick="showSec('s5',this)"><span class="nav-num">05</span>必要人材</button>
+  <button class="nav-btn" onclick="showSec('s7',this)"><span class="nav-num">06</span>akahai agentの示唆</button>
+  <button class="nav-btn" onclick="showSec('s8',this)"><span class="nav-num">07</span>ビジネスモデル変革</button>
+</nav>
+
+<!-- S1 -->
+<div id="s1" class="sec active">
+  <p class="sec-label">01 — 職種別AI代替</p>
+  <p class="sec-title">13職種それぞれの業務がどう変わるか</p>
+  <p class="sec-desc">職種を選択すると、AI代替可能性・増える業務・減る業務・代替できない業務が表示されます。</p>
+  <div class="chips" id="chips-s1"></div>
+  <div id="s1-panel"></div>
+</div>
+
+<!-- S2 -->
+<div id="s2" class="sec">
+  <p class="sec-label">02 — 年次ロードマップ</p>
+  <p class="sec-title">2025〜2030年、何がいつAIに変わるか</p>
+  <p class="sec-desc">職種を選択して、年次別のAI移行スケジュールと必要スキルの変化を確認できます。</p>
+  <div class="chips" id="chips-s2"></div>
+  <div id="s2-panel"></div>
+</div>
+
+<!-- S3 -->
+<div id="s3" class="sec">
+  <p class="sec-label">03 — 企業規模別</p>
+  <p class="sec-title">組織規模によって変わるAI移行の実態</p>
+  <p class="sec-desc">スモール・ミドル・エンタープライズ別に、組織実態と2030年ロードマップを整理します。</p>
+  <div class="chips">
+    <button class="chip active" onclick="scaleChip(this,'small')">スモール（〜50名）</button>
+    <button class="chip" onclick="scaleChip(this,'mid')">ミドル（50〜500名）</button>
+    <button class="chip" onclick="scaleChip(this,'ent')">エンタープライズ（500名〜）</button>
+  </div>
+  <div id="s3-panel"></div>
+</div>
+
+<!-- S4 -->
+<div id="s4" class="sec">
+  <p class="sec-label">04 — 業種別</p>
+  <p class="sec-title">業種が違えば、AI移行の速さも形も違う</p>
+  <p class="sec-desc">7業種の組織特性・課題・年次ロードマップを業種ごとに確認できます。</p>
+  <div class="chips">
+    <button class="chip active" onclick="indChip(this,'ec')">EC・D2C</button>
+    <button class="chip" onclick="indChip(this,'saas')">BtoB SaaS</button>
+    <button class="chip" onclick="indChip(this,'fmcg')">消費財・FMCG</button>
+    <button class="chip" onclick="indChip(this,'fin')">金融・保険</button>
+    <button class="chip" onclick="indChip(this,'media')">メディア・エンタメ</button>
+    <button class="chip" onclick="indChip(this,'retail')">リテール・小売</button>
+    <button class="chip" onclick="indChip(this,'med')">医療・ヘルスケア</button>
+  </div>
+  <div id="s4-panel"></div>
+</div>
+
+<!-- S5 -->
+<div id="s5" class="sec">
+  <p class="sec-label">05 — 必要人材</p>
+  <p class="sec-title">各職種の市場価値は、年ごとにどう変わるか</p>
+  <p class="sec-desc">職種ごとに「需要トレンド」と「年次で必要なスキル変化」を整理します。</p>
+  <div class="chips" id="chips-s5"></div>
+  <div id="s5-panel"></div>
+</div>
+
+<!-- S7 -->
+<div id="s7" class="sec">
+  <p class="sec-label">06 — akahai agentへの示唆</p>
+  <p class="sec-title">分析を踏まえ、akahai agentはどうあるべきか</p>
+  <p class="sec-desc">2025〜2030年の各フェーズで取るべき戦略的アクションと優先テーマを年次で整理します。</p>
+  <div class="insight">
+    <p class="insight-title">コアテーゼ</p>
+    <p class="insight-body">akahai agentは「AIが何を代替するか」を可視化し、マーケターが「AIと共に進化する」ための最も信頼されるパートナーとなる。単なる自動化ツールではなく、マーケター・企業の変革を伴走する知的エージェントとして設計する。</p>
+  </div>
+  <div class="phase-cards">
+    <div class="phase-card"><p class="phase-num">2025</p><p class="phase-title">信頼獲得フェーズ</p><p class="phase-body">ROI即時可視化。「使って1週間で○時間削減」体験設計が最重要。</p></div>
+    <div class="phase-card"><p class="phase-num">2026</p><p class="phase-title">チーム展開フェーズ</p><p class="phase-body">個人→チームへ。ワークフロー設計支援・AI業務分担診断機能。</p></div>
+    <div class="phase-card"><p class="phase-num">2027</p><p class="phase-title">プラットフォーム化</p><p class="phase-body">組織全体のAI化設計。業種特化パッケージ。マーケOSへの布石。</p></div>
+    <div class="phase-card"><p class="phase-num">2028</p><p class="phase-title">人材育成エコシステム</p><p class="phase-body">認定プログラム。役割転換支援。企業向け変革研修。</p></div>
+    <div class="phase-card"><p class="phase-num">2029〜2030</p><p class="phase-title">業界デファクト化</p><p class="phase-body">マーケのOS。Salesforce×セールスの役割をマーケ×AIで担う。</p></div>
+  </div>
+  <div class="chips">
+    <button class="chip active" onclick="akChip(this,'2025')">2025年の戦略</button>
+    <button class="chip" onclick="akChip(this,'2026')">2026年の戦略</button>
+    <button class="chip" onclick="akChip(this,'2027')">2027年の戦略</button>
+    <button class="chip" onclick="akChip(this,'2028')">2028年の戦略</button>
+    <button class="chip" onclick="akChip(this,'2030')">2029〜2030年</button>
+  </div>
+  <div id="s7-panel"></div>
+  <div class="cta-block" id="contact">
+    <p class="cta-title">akahai agentで、あなたのマーケ組織を2030年仕様に</p>
+    <p class="cta-sub">職種別・規模別・業種別の具体的なAI活用設計を、akahai agentが伴走します。</p>
+    <a href="#" class="hero-cta">詳しく相談する →</a>
+  </div>
+</div>
+
+<!-- S8: ビジネスモデル変革 -->
+<div id="s8" class="sec">
+  <p class="sec-label">07 — ビジネスモデル変革</p>
+  <p class="sec-title">人材紹介・マッチング事業は何をどこまで変えるべきか</p>
+  <p class="sec-desc">現在の「デジタルマーケ人材紹介・フリーランスマッチング」モデルを2030年仕様に変革するための、職種ポートフォリオ・内部人材・年次アクションを整理します。</p>
+
+  <div class="tabnav" id="biztabs">
+    <button class="tabnav-btn active" onclick="bizTab('bt0',this)">① 売上実績と目標</button>
+    <button class="tabnav-btn" onclick="bizTab('bt1',this)">② ビジネスモデル変革</button>
+    <button class="tabnav-btn" onclick="bizTab('bt2',this)">③ 職種ポートフォリオ</button>
+    <button class="tabnav-btn" onclick="bizTab('bt3',this)">④ 必要な内部人材</button>
+    <button class="tabnav-btn" onclick="bizTab('bt4',this)">⑤ 年次ロードマップ</button>
+  </div>
+
+  <!-- BT0: 売上実績と目標 -->
+  <div id="bt0" class="tabpanel active">
+    <div class="stat-grid4" style="grid-template-columns:repeat(3,1fr)">
+      <div class="statc"><div class="statc-n">+86%</div><div class="statc-l">月間売上成長（25年10月→26年5月）</div></div>
+      <div class="statc"><div class="statc-n">17.0→12.1万円</div><div class="statc-l">業務委託 件あたり単価の変化</div></div>
+      <div class="statc"><div class="statc-n">18→22件</div><div class="statc-l">業務委託 件数の推移</div></div>
+    </div>
+
+    <p class="card-title" style="margin-bottom:.4rem">月次売上実績（2025年10月〜2026年6月）</p>
+    <p class="card-body" style="margin-bottom:.8rem">業務委託は安定成長中だが、件あたり単価は軟化傾向。人材紹介は2026年3〜5月のみ発生した不定期収益。</p>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:8px;font-size:12px;color:var(--text-secondary)">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#7F77DD"></span>業務委託（左軸・万円）</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75"></span>人材紹介（左軸・万円）</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:2px;background:#D85A30;border-top:2px dashed #D85A30"></span>業務委託 件あたり単価（右軸・万円）</span>
+    </div>
+    <div style="position:relative;width:100%;height:280px;margin-bottom:1.5rem">
+      <canvas id="revChart" role="img" aria-label="2025年10月から2026年6月の月次売上の積み上げ棒グラフと件あたり単価の推移線">業務委託売上は264万円から324万円の間で推移し件数は18件から22件へ増加。人材紹介は26年3月から5月にかけて発生し最大270万円。件あたり単価は17.0万円から12.1万円へ緩やかに低下後、26年6月は13.9万円に回復。</canvas>
+    </div>
+
+    <p class="card-title" style="margin-bottom:.4rem">目指す収益構成（2026年→2030年）</p>
+    <p class="card-body" style="margin-bottom:.8rem">ヘッドカウント連動型（業務委託）の比率を下げ、人材紹介・リテイナー型コンサル・認定教育プログラムという非ヘッドカウント型収益の比率を高めていく目標イメージ。予測ではなく戦略的な目標値。</p>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:8px;font-size:12px;color:var(--text-secondary)">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#7F77DD"></span>業務委託</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75"></span>人材紹介</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#EF9F27"></span>リテイナー型コンサル</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#D85A30"></span>認定・教育プログラム</span>
+    </div>
+    <div style="position:relative;width:100%;height:280px">
+      <canvas id="mixChart" role="img" aria-label="2026年から2030年の収益構成比目標を示す100%積み上げ棒グラフ">2026年は業務委託80%人材紹介15%リテイナー5%。2030年には業務委託35%人材紹介20%リテイナー型コンサル25%認定教育プログラム20%という構成を目標とする。</canvas>
+    </div>
+  </div>
+
+  <!-- BT1 -->
+  <div id="bt1" class="tabpanel">
+    <div class="warn-block">
+      <p class="warn-title">構造的な危機</p>
+      <p class="warn-body">現在のモデルは「職種名で人材を紹介する」設計になっている。しかし2030年に向けて職種名が持つ意味は根本的に変わる。「SEOライターを紹介してほしい」というニーズ自体が消滅し、「コンテンツ戦略を担える人材」というアウトカムベースの依頼に変わる。今のままでは取り扱う商品が陳腐化する。</p>
+    </div>
+    <div class="chips" id="bizchips">
+      <button class="chip active" onclick="bizChip(this,'val')">価値提案</button>
+      <button class="chip" onclick="bizChip(this,'supply')">供給サイド（登録人材）</button>
+      <button class="chip" onclick="bizChip(this,'demand')">需要サイド（クライアント）</button>
+      <button class="chip" onclick="bizChip(this,'fee')">収益モデル</button>
+      <button class="chip" onclick="bizChip(this,'screen')">スクリーニング</button>
+    </div>
+    <div id="biz-panel"></div>
+  </div>
+
+  <!-- BT2 -->
+  <div id="bt2" class="tabpanel">
+    <div class="stat-grid4">
+      <div class="statc"><div class="statc-n" style="color:#A32D2D">3</div><div class="statc-l">撤退推奨職種</div></div>
+      <div class="statc"><div class="statc-n" style="color:#854F0B">4</div><div class="statc-l">転換支援が必要</div></div>
+      <div class="statc"><div class="statc-n" style="color:#3B6D11">4</div><div class="statc-l">強化すべき職種</div></div>
+      <div class="statc"><div class="statc-n" style="color:#534AB7">3</div><div class="statc-l">新設すべきカテゴリ</div></div>
+    </div>
+    <div class="chips" id="portchips">
+      <button class="chip active" onclick="portChip(this,'exit')">撤退・縮小（3職種）</button>
+      <button class="chip" onclick="portChip(this,'transform')">転換支援が必要（4職種）</button>
+      <button class="chip" onclick="portChip(this,'grow')">強化すべき（4職種）</button>
+      <button class="chip" onclick="portChip(this,'new')">新設すべきカテゴリ（3種）</button>
+    </div>
+    <div id="port-panel"></div>
+  </div>
+
+  <!-- BT3 -->
+  <div id="bt3" class="tabpanel">
+    <p class="sec-desc" style="margin-bottom:1rem">ビジネスモデル変革を実行するために、akahai agent内部に必要な人材像と役割です。</p>
+    <div class="chips" id="talentchips">
+      <button class="chip active" onclick="talentChip(this,'now')">今すぐ必要（2026年内）</button>
+      <button class="chip" onclick="talentChip(this,'mid')">中期で必要（2027〜2028）</button>
+      <button class="chip" onclick="talentChip(this,'future')">長期で必要（2029〜2030）</button>
+    </div>
+    <div id="talent-panel"></div>
+  </div>
+
+  <!-- BT4: 年次ロードマップ（2026年が現在地） -->
+  <div id="bt4" class="tabpanel">
+    <div class="chips" id="yearchips">
+      <button class="chip active" onclick="yearChip(this,'2026')">2026年（今ここ）</button>
+      <button class="chip" onclick="yearChip(this,'2027')">2027年</button>
+      <button class="chip" onclick="yearChip(this,'2028')">2028年</button>
+      <button class="chip" onclick="yearChip(this,'2030')">2029〜2030年</button>
+    </div>
+    <div id="year-panel"></div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const JOBS=[
+  {k:'ad',n:'広告運用担当',risk:75,rl:'h',
+   inc:['AIクリエイティブの評価・監査','広告戦略設計（予算配分）','実験設計・検証業務','クリエイティブブリーフ作成'],
+   dec:['キーワード入稿・除外設定','定期レポート作成','A/Bテストの単純設定','入札単価の手動調整'],
+   rem:['ビジネス目標とKPIの整合設計','新規市場・競合への判断','クライアント信頼関係構築','AIが出せないクリエイティブ洞察'],
+   ytl:[
+    {y:'2025',now:true,head:'スマート入札が標準化。手動入札業務が大幅減少',text:'Google P-MAX・Meta Advantage+が普及し人間の入札管理業務が縮小。クリエイティブ評価力・戦略スキルへのシフトが始まる。'},
+    {y:'2026',head:'クリエイティブ戦略と予算設計が差別化の核に',text:'AIが広告文・バナー初稿を生成しA/Bテストを自動化。人間はクリエイティブ方向性決定と予算ポートフォリオ設計へ。'},
+    {y:'2027',head:'「AI管理者」と「広告戦略家」への二極化',text:'定型オペレーション担当の需要が急減。複数AIエージェントを統括しROAS以上のビジネス価値を出せる人材需要は増加。'},
+    {y:'2028',head:'広告実作業は95%以上AI。戦略家のみ生存',text:'採用人数は現在の30〜40%程度に。市場価値は上昇するが求められるスキルセットが根本的に変わる。'},
+    {y:'2029〜2030',head:'AI広告エージェントの「設計者・監督者」として最高価値',text:'AIが広告全体を自律管理。人間は月次レビューと重要判断のみ。AI設計・カスタマイズ・評価ができる人材はプレミアム価値。'}]},
+  {k:'adop',n:'広告オペレーション',risk:90,rl:'h',
+   inc:['AI自動化システムの設計・監視','高度トラブルシューティング','アドテク深い専門化'],
+   dec:['広告素材の入稿・確認作業','定期レポートの作成・集計','キャンペーン設定コピー','トラッキング手動確認'],
+   rem:['ブランドセーフティ最終判断','AI自動化の品質保証','障害時の緊急対応','高度なアドフラウド対応'],
+   ytl:[
+    {y:'2025',now:true,head:'レポート・定型確認がAI補助で大幅効率化',text:'AI補助で担当者1人分の業務が0.5人分に圧縮できるケースが出始める。AIレポートツール活用力が必須スキルに。'},
+    {y:'2026',head:'入稿・確認・基本レポートのほぼ全てが自動化',text:'「入稿専任担当」という役職を廃止し始める企業が出る。残る業務はシステム設計・トラブルシューティング・品質保証のみ。'},
+    {y:'2027',head:'アドベリフィケーション・BSもAI化。95%が代替可能に',text:'人間が担うべき領域がほぼなくなる。業務の95%以上がAI可能になり、残る人員は「システム障害時の対応者」のみ。'},
+    {y:'2028',head:'広告オペレーション担当という役職がほぼ消滅',text:'残る少数は自動化システムの設計・監視・改善を担う高度専門職のみ。採用人数は現在の10〜20%程度に激減。'},
+    {y:'2029〜2030',head:'「広告自動化アーキテクト」として超少数が高付加価値で存続',text:'広告オペレーションという職種は市場から消滅し、超専門職に進化した少数のみが継続。技術力と事業理解が必要。'}]},
+  {k:'seowr',n:'SEOライター',risk:85,rl:'h',
+   inc:['AIコンテンツの品質チェック・編集','専門知識の提供・E-E-A-T担保','コンテンツ戦略サポート'],
+   dec:['汎用キーワード記事の執筆','商品説明・FAQ記事','ハウツー・まとめ記事','リライト・最適化作業'],
+   rem:['高度専門知識を要するコンテンツ','独自取材・インタビュー記事','著名執筆者としてのブランド価値','読者との感情的つながり'],
+   ytl:[
+    {y:'2025',now:true,head:'AI生成記事が量産市場を侵食。単価下落が始まる',text:'ChatGPT等でのSEO記事生成が一般化し、量産型SEO記事の発注単価が30〜50%下落し始める。'},
+    {y:'2026',head:'汎用SEOライター需要が50%以上消滅',text:'SEO記事の70〜80%がAI生成に移行。生き残るのは専門知識・独自体験・AI編集スキルを持つ人材のみ。'},
+    {y:'2027',head:'Googleが「専門家の一次情報」を優遇',text:'AI生成コンテンツの氾濫でGoogleが人間の体験・専門性をより重視するアルゴリズムを強化。'},
+    {y:'2028',head:'「SEOライター」という職種カテゴリーが市場から消える',text:'独立・フリーランス市場がほぼ消滅。残る選択肢は専門家ライター・AI編集者・コンテンツストラテジストのみ。'},
+    {y:'2029〜2030',head:'生存ルートは「深い専門性」またはAI管理者への転換のみ',text:'量産型SEOライター市場は完全消滅。医師・弁護士・技術専門家の著名執筆者か、AI品質管理者として生存。'}]},
+  {k:'sns',n:'SNSマーケター',risk:55,rl:'m',
+   inc:['AIを使ったコンテンツカレンダー設計','エンゲージメント分析・傾向把握','UGCキュレーション・活用設計'],
+   dec:['定型投稿文章の作成','画像・バナーの一次素材作成','ハッシュタグ調査','エンゲージメントの単純集計'],
+   rem:['コミュニティ温度感の把握','リアルタイム危機対応','インフルエンサー関係構築','ブランドらしさの維持'],
+   ytl:[
+    {y:'2025',now:true,head:'投稿生成・画像生成のAI活用で生産性が向上',text:'Instagram・TikTok・X向けの投稿文・キャプション・ハッシュタグをAIが生成。「量産業務」が減り企画に時間を使えるように。'},
+    {y:'2026',head:'スケジューリング・定型投稿・レポートはAI自動化完成',text:'SNS担当者の業務から「定型作業」が消え、コミュニティマネジメント・企画・危機対応が残る。'},
+    {y:'2027',head:'AIが反応・エンゲージメントを分析し最適投稿を提案',text:'人間はAIの提案の承認・否認・修正と、ブランドボイスの維持、炎上・危機対応を担当。'},
+    {y:'2028',head:'SNSマーケターからコミュニティマネージャーへ完全転換',text:'量産型SNS投稿はAI担当が完成。人間はUGC活性化・ファンコミュニティ設計・アンバサダー関係構築へ。'},
+    {y:'2029〜2030',head:'コミュニティオーナーとしてブランドの「推し」を育てる専門家',text:'コンテンツを量産するAIと人間の役割が完全に分化。「熱狂的なファンをどう育てるか」を設計する人材へ。'}]},
+  {k:'content',n:'コンテンツマーケター',risk:60,rl:'m',
+   inc:['AIコンテンツの編集・監修業務','コンテンツ戦略・配信計画設計','AIアウトプットのブランド整合確認'],
+   dec:['SEO記事の一次執筆','メールニュースレターの定型文作成','SNS投稿文の生成','製品説明文の初稿作成'],
+   rem:['読者との感情的共鳴の設計','独自取材・一次情報取得','ブランドナラティブの構築','専門家インタビューの解釈'],
+   ytl:[
+    {y:'2025',now:true,head:'初稿生成がAIに移行。編集・監修者としての役割にシフト',text:'ブログ・メール・LPの初稿生成をAIが担い始める。コンテンツマーケターは評価・編集・ブランド整合確認へ。'},
+    {y:'2026',head:'SEO記事・製品コンテンツのAI生成が標準化',text:'量産ライティングの市場価値が急落。コンテンツ戦略・配信計画・顧客ジャーニー設計が求められるスキルに。'},
+    {y:'2027',head:'AIがコンテンツのPDCAを自動化。人間は「なぜ・何を」の設計に',text:'AIがコンテンツ効果を分析し、SEO改善・リライト・A/Bテストを自律実行。人間は根本設計へ。'},
+    {y:'2028',head:'一次情報・独自視点・体験コンテンツが最高価値に',text:'AI生成コンテンツが溢れる中、「誰も書けない・体験できないこと」を伝えるコンテンツの希少価値が急上昇。'},
+    {y:'2029〜2030',head:'コンテンツストラテジストとして事業成長に直結',text:'「コンテンツを書く人」から「コンテンツエコシステムを設計する人」へ進化。最高付加価値職種に。'}]},
+  {k:'crm',n:'CRMマーケター',risk:45,rl:'m',
+   inc:['AIパーソナライゼーション設計・監督','CX全体設計','カスタマーサクセスとの連携強化'],
+   dec:['定型メール・シナリオの作成','セグメントの手動設定','メール件名のA/Bテスト設定','解約防止施策の定型化'],
+   rem:['顧客LTV価値の戦略設計','顧客インサイトの深耕・共感','VIP顧客との人間的関係','AIが拾えない顧客の感情把握'],
+   ytl:[
+    {y:'2025',now:true,head:'AI活用でメール・シナリオ設計が効率化',text:'メール件名最適化・送信時間最適化・パーソナライゼーション文言のAI生成が始まる。CRMのPDCAが高速化。'},
+    {y:'2026',head:'セグメンテーション・LTV予測のAI化。CRMマーケターは戦略側へ',text:'顧客セグメントの自動生成・LTV予測・解約リスクスコアリングがAIで自動化。戦略設計とAI解釈に集中。'},
+    {y:'2027',head:'CRM全体のAIオーケストレーション。人間はVIP・例外・戦略のみ',text:'解約防止・ロイヤルティ向上・クロスセルのシナリオをAIが自律実行。人間はVIP対応と戦略設計へ。'},
+    {y:'2028',head:'CRMとカスタマーサクセスの融合。LTV最大化の設計者へ',text:'CRMマーケターの業務がマーケ→CS→セールスを横断したカスタマーエクスペリエンス全体設計へ拡張。'},
+    {y:'2029〜2030',head:'カスタマーエクスペリエンス設計者として確立',text:'AIが測定・最適化する中で、人間は「なぜこの顧客との関係を大切にするか」という意味を設計する。'}]},
+  {k:'data',n:'データアナリスト',risk:40,rl:'m',
+   inc:['AIモデルの設計・評価・監査','ビジネス課題からAI活用要件への翻訳','データパイプライン設計・管理'],
+   dec:['定型ダッシュボード作成','単純SQLクエリ・集計作業','レポートの可視化・フォーマット化','異常値の初期検知'],
+   rem:['ビジネスコンテキストへのデータ解釈','経営判断への示唆出し','データ倫理・バイアスの監視','組織横断のデータ活用推進'],
+   ytl:[
+    {y:'2025',now:true,head:'AIがSQL・コード生成を支援。分析生産性が大幅向上',text:'GitHub Copilot・Claude等でSQLクエリ・Pythonコードの生成支援が一般化。余力をインサイト抽出へ。'},
+    {y:'2026',head:'ダッシュボード・定型レポートのAI自動化。インサイト職へ',text:'定期レポート・KPIダッシュボード更新がAI自動化で対応可能に。「データから意味を見出す人」に完全シフト。'},
+    {y:'2027',head:'AIモデルの設計・評価・監査が新たなコア業務に',text:'マーケ領域でのML活用（LTV予測・チャーン予測）が本格化。MLOps・モデル監査・バイアス検知知識が必須に。'},
+    {y:'2028',head:'「ビジネス×AI×データ」を統合する橋渡し人材として高価値化',text:'AIが分析の実行を担う中、人間は「どんな問いを立てるか」「AIの答えのどこを信頼するか」の判断力へ。'},
+    {y:'2029〜2030',head:'AIアナリティクス時代の「設計者・監督者・解釈者」として確立',text:'最も安定して高い価値を持ち続ける。AI設計・評価ができる「AIアナリティクス専門家」として事業の中核に。'}]},
+  {k:'webdir',n:'WEBディレクター',risk:35,rl:'l',
+   inc:['AIプロトタイピングを使った高速提案','AIを活用したUXリサーチ効率化','AI開発ベンダーのマネジメント'],
+   dec:['ワイヤーフレームの手動制作','単純なコンテンツ更新指示','サイト表示速度等の基本チェック'],
+   rem:['プロジェクト全体のビジョン策定','関係者間の合意形成','ユーザー体験の本質設計','事業目標とUXの統合'],
+   ytl:[
+    {y:'2025',now:true,head:'AIで提案・診断・設計の効率が向上。提案品質が上がる',text:'競合サイト分析・UX診断・ページ改善提案をAIが高速化。ディレクターは提案の量と質を同時に向上できる。'},
+    {y:'2026',head:'ワイヤーフレーム・デザイン案のAI生成が標準化。評価者化',text:'Figma AI等でワイヤーフレームと基本デザイン案を高速生成。ディレクターはAIが出した案から最適方向性を選ぶ評価者に。'},
+    {y:'2027',head:'コーディング・CMS更新・テストのAI自動化。関与領域が絞られる',text:'フロントエンドコーディング・CMS更新等がAI自動化。ディレクターは要件定義・UX設計・KPI管理に集中。'},
+    {y:'2028',head:'WEBディレクターからプロダクトマネージャーへの進化が分岐点',text:'生き残りはプロダクトマネジメントまたは特定領域の専門化（CVR改善・グロースハック等）へのシフトが必要。'},
+    {y:'2029〜2030',head:'DX戦略×体験設計の意思決定者として確立',text:'AIが実行を担う時代に人間は「何のためにこのサイトが存在するか」「どんな顧客体験を目指すか」を設計するDXリーダーへ。'}]},
+  {k:'strategy',n:'ストラテジックプランナー',risk:25,rl:'l',
+   inc:['AIインサイトの解釈・統合','大量データを踏まえた戦略仮説生成','クリエイティブブリーフの精度向上'],
+   dec:['一次調査のデータ集計・単純分析','定型フレームワーク適用','既存フォーマットのレポート作成'],
+   rem:['人間心理・文化的洞察','クリエイティブ跳躍','組織間の合意形成','社会・時代の文脈読解'],
+   ytl:[
+    {y:'2025',now:true,head:'AIで定量分析・リサーチを効率化。洞察の深化に専念',text:'消費者調査データの分析・競合レポート・SNSトレンド把握をAIが高速化。「データを解釈し洞察に変える」時間が増える。'},
+    {y:'2026',head:'AIインサイトを人間の文化的洞察で昇華させる能力が核心に',text:'AIが大量データからパターンを提示するが「それが何を意味するか」の解釈は人間が担う。文化・社会・心理への深い理解が価値に。'},
+    {y:'2027',head:'クリエイティブブリーフのAI生成と人間による昇華が標準プロセスに',text:'AIがブリーフの初稿を生成し、プランナーが「これでは届かない・ここが本質ではない」と磨き込む。'},
+    {y:'2028',head:'AI時代に最も希少な「人間的洞察」の専門家へ',text:'AIが担う業務が拡大するほど、AIが出せないものへの需要が高まる。人間の感情・矛盾・文化的コードを理解できる人材が希少に。'},
+    {y:'2029〜2030',head:'AI×人間の統合マーケ戦略設計者として確立',text:'最も高い生存価値を持つ職種。AIを使いこなしながら「人間にしかわからない真実」を掘り起こす洞察の専門家として高い需要。'}]},
+  {k:'mkconsult',n:'マーケコンサルタント',risk:30,rl:'l',
+   inc:['AI導入・活用コンサルティング','デジタルトランスフォーメーション支援','AIを活用した高速分析・提案'],
+   dec:['ベンチマーク調査の一次収集','標準フレームワーク適用作業','KPI設定の定型化業務'],
+   rem:['組織変革の推進・人心掌握','経営層への説得・信頼構築','複合的問題の本質診断','業界固有知識・人脈'],
+   ytl:[
+    {y:'2025',now:true,head:'AI活用アドバイスの需要が急増。マーケコンサルに新領域',text:'クライアントから「AIをマーケにどう使うか」の相談が急増。「AIマーケ活用支援」が新たなサービスラインに。'},
+    {y:'2026',head:'マーケコンサルとDXコンサルが融合。「AI変革推進」が主戦場',text:'クライアントのAIツール選定・導入・運用設計・組織変革をトータルで支援するニーズが拡大。'},
+    {y:'2027',head:'コンサルタント自身がAIエージェントを設計・運用して提案品質向上',text:'コンサルタントがAIエージェントを使って市場分析・競合調査・KPI設計を高速化。提案品質と範囲が拡大。'},
+    {y:'2028',head:'クライアント内部にAI人材が育ち、外部コンサルの役割が変容',text:'クライアント企業のAIリテラシーが向上し、外部コンサルへの需要は「より高難度の問題・組織変革・業界横断知識」に特化。'},
+    {y:'2029〜2030',head:'「AI時代のマーケ組織をどう設計するか」の専門家として確立',text:'組織設計・人材育成・ガバナンス構築を担う最高付加価値ポジションへ。コンサルファームが最高価値で求める人材。'}]},
+  {k:'planner',n:'アカウントプランナー',risk:45,rl:'m',
+   inc:['AIを活用した提案書高速作成','データドリブンな課題定義','ピッチ資料のAI補助制作'],
+   dec:['定型提案書・見積もり作成','競合調査の一次情報収集','レポート取りまとめ業務'],
+   rem:['クライアントとの長期信頼関係','組織政治の読み取り','人間的な交渉・合意形成','ビジネス課題の本質把握'],
+   ytl:[
+    {y:'2025',now:true,head:'提案業務のAI補助が始まり、生産性が向上',text:'競合調査・市場分析・ピッチ資料の初稿をAIが高速生成。プランナーは質の向上と顧客との関係構築に時間を使えるように。'},
+    {y:'2026',head:'AIで初稿生成→人間がブラッシュアップが標準プロセスに',text:'ピッチ資料・提案書の一次作成はAIが担当。「AIが出した提案のどこが間違っているか」を見抜く目利き力が必要に。'},
+    {y:'2027',head:'代理店の「制作・運用」から「戦略・変革」へのシフトが加速',text:'アカウントプランナーはクライアントのビジネス変革パートナーへ進化が求められる。「なぜこの戦略か」の根拠提示が価値の核に。'},
+    {y:'2028',head:'「代理店→コンサルファーム」型の役割転換が完成',text:'定型的なアカウント管理はAIと少数人員で対応可能に。上位プランナーの需要は維持・拡大。中間層は大幅縮小。'},
+    {y:'2029〜2030',head:'クライアントのAI変革を伴走するビジネスパートナー',text:'「広告代理店のAP」という肩書は実質コンサルタントに。代理店ビジネスモデルが「変革コンサル費」に転換。'}]},
+  {k:'seocon',n:'SEOコンサルタント',risk:50,rl:'m',
+   inc:['AI検索（AIO）対策の戦略立案','エンティティSEO・ブランドオーソリティ設計','技術SEO×AIツールの高速診断'],
+   dec:['キーワード調査の一次リスト作成','メタタグ最適化の単純設定','競合コンテンツギャップ分析の一次作業'],
+   rem:['SEO×ビジネス戦略の統合','検索エンジンアルゴリズム変化への解釈','AI検索時代の新コンセプト立案','クライアント教育・変革支援'],
+   ytl:[
+    {y:'2025',now:true,head:'AI Overview台頭でSEO戦略の前提が変わる',text:'Googleのai overviewが検索結果の上位を占領し始め、ゼロクリック問題が深刻化。AIO対策の知識が急務に。'},
+    {y:'2026',head:'テクニカルSEO診断はAI自動化。コンサルは戦略・解釈へ特化',text:'サイト診断・クロール分析がAIツールで自動化。コンサルの付加価値は「診断結果をどう解釈し優先順位をつけるか」へ。'},
+    {y:'2027',head:'生成AIサーチが主流化。GEO対応が必須に',text:'AI検索エンジンが回答を生成する際の「引用元に選ばれるブランドになる」戦略＝GEOの専門家としての需要が生まれる。'},
+    {y:'2028',head:'SEO・GEO・PR・コンテンツを統合した「検索プレゼンス戦略家」へ',text:'「SEOコンサルタント」という職種名が「検索プレゼンス戦略家」に実質変化。マルチサーチ最適化が業務の核に。'},
+    {y:'2029〜2030',head:'AI時代の「ブランドが選ばれる理由を設計する」専門家として確立',text:'技術×コンテンツ×ブランド×PRを統合した最高付加価値の専門家として新たな地位を確立。'}]},
+  {k:'video',n:'動画制作',risk:55,rl:'m',
+   inc:['AI動画ツールを使ったプロトタイプ制作','コンセプト・絵コンテ段階でのAI活用','AI音楽・ナレーション生成活用'],
+   dec:['単純な説明動画・テンプレート動画の制作','字幕・テキスト入力作業','素材の単純編集・カット作業'],
+   rem:['感情を動かすストーリーテリング','現場ディレクション・演出','ブランドの世界観構築','高品質なシネマティック映像'],
+   ytl:[
+    {y:'2025',now:true,head:'AI動画生成ツールが台頭。量産型動画の価格破壊が始まる',text:'Runway・Sora・Pikaなどのツールが実用段階に。テンプレート動画・製品紹介のAI生成が始まり、量産型の制作単価が急落。'},
+    {y:'2026',head:'SNSショート動画・EC動画のAI生成が標準化',text:'TikTok・Reels・YouTube Shorts向けの量産コンテンツは大半がAI生成に移行。人間制作者は台本・演出・品質評価の役割へ。'},
+    {y:'2027',head:'AIが素材編集・字幕・BGMを自動処理。人間はディレクションに特化',text:'撮影素材からAIが自動編集・字幕生成・BGM選択を実施。「AIを使いこなすクリエイター」の生産性が5〜10倍に向上。'},
+    {y:'2028',head:'量産型動画制作職は消滅。クリエイティブディレクター化が生存ルート',text:'量産型の動画編集者・制作アシスタントの仕事はほぼAIに代替。高品質映像CDとAI活用コンテンツクリエイターの二択。'},
+    {y:'2029〜2030',head:'感情を動かすストーリーテリングが人間最後の聖域',text:'AIが技術的完成度を担保するため、人間が差別化できるのは「感情的共鳴・文化的コンテキスト・独自スタイル」のみ。'}]}
+];
+
+const SZ={
+  small:{name:'スモール（〜50名）',stats:[['マーケ専任人員','0〜1名（多くは兼務）'],['実態','社長・営業・店長が兼務。専任ゼロが普通'],['外部リソース','制作会社・フリーランスに外注'],['ツール予算','月5〜20万円（広告費込み）'],['意思決定','社長が即断。稟議なし']],challenge:'そもそも「マーケ担当」が存在しない企業が大半。社長や営業が片手間でSNS投稿・広告出稿・LP管理を担う。外注先に丸投げしているが、何をやってもらっているか把握できていない。PDCAどころかデータを見る時間もない。',ytl:[
+    {y:'2025',now:true,head:'社長・担当者がChatGPT等を個人的に使い始める',text:'SNS投稿文・メール文・LP文章の生成補助が主な用途。「使ってみたらすごかった」レベルの散発利用。ガバナンスも方針もなく個人の裁量任せ。外注先との役割は変わらず。'},
+    {y:'2026',head:'「AIを使いこなせるフリーランス・外注先」が選ばれる時代に',text:'外注コストが相対的に下がり始め、AI活用前提の発注が増加。「LP1本5万円→AI込みで1万円」という価格破壊が起きる一方、クオリティ差が拡大。AI活用を前提に内製化を試みる事業主が出始める。'},
+    {y:'2027',head:'「AI＋社長の判断」でマーケが回りはじめる',text:'広告運用・コンテンツ生成・メール配信・基本レポートがAIエージェントで自動化。「0.5人分の仕事をAIが担う」体制が実現。外注費が年間数百万削減できるケースが出る。'},
+    {y:'2028',head:'AI活用できる事業主と丸投げのままの事業主で格差爆発',text:'AIを使いこなしたスモール企業は、少人数でミドル並みのマーケ実行力を獲得し集客コストが激減。一方で「外注先任せ」のままの企業は競合に顧客を奪われ始める。'},
+    {y:'2029〜2030',head:'専任ゼロでもマーケが自律運用される時代へ',text:'AIエージェントが広告・コンテンツ・CRM・SEO・分析を自律運用。社長が週1〜2時間でAIの提案を承認するだけでマーケが回る状態が一部で実現。「マーケ担当を雇う」という概念が変わる。'}]},
+  mid:{name:'ミドル（50〜500名）',stats:[['マーケ専任人員','1〜5名（専任）＋代理店・外注'],['実態','専任は1〜3名。残りは代理店や制作会社に委託'],['代理店依存度','高。広告・制作・SEOは外注が主流'],['ツール予算','月20〜200万円（広告費除く）'],['意思決定','部長または役員の承認が必要']],challenge:'専任マーケ担当が1〜3名いても、広告運用・コンテンツ制作・SNS・SEO・レポート作成を全部こなすのは現実的に不可能。結果として代理店・フリーランス・制作会社への外注が常態化し、何にいくら払っているか・効果がどうかも把握できていない。AI導入を検討しても「誰が主導するか」「どのツールが正解か」が決まらないまま時間が経つ。',ytl:[
+    {y:'2025',now:true,head:'個人レベルのAI活用が始まるが、組織としての方針はなし',text:'担当者がChatGPT・Claude等を個人的に活用開始。議事録・メール・記事の初稿生成が主な用途。上司は「セキュリティが心配」「公式には認めていない」という状態が続く。代理店との関係は変わらず。'},
+    {y:'2026',head:'AI利用ガイドライン整備。「使ってよいもの」の整理が始まる',text:'情報漏洩リスクを受け、利用可能ツール・入力禁止情報を社内で整理し始める。広告レポート・コンテンツ初稿・SNS投稿の一部をAIで対応できるようになり、担当者の工数が月10〜20時間削減。代理店への依存度を下げる議論が起きはじめる。'},
+    {y:'2027',head:'代理店との役割再定義が本格化。インハウス移行が始まる企業も',text:'「代理店に払っている費用でAIツールと専任を雇えるのでは」という議論が経営層で起きる。広告運用・コンテンツ制作の一部をインハウス化し、代理店はより上位の戦略・クリエイティブに絞る企業が増加。データ統合（広告×CRM×Web）にAIを活用し始める。'},
+    {y:'2028',head:'1〜2名の専任＋AIで「3〜5名分」の実行力が出せる体制へ',text:'AIエージェントが定型業務の大半を担うことで、少人数でも広告・コンテンツ・CRM・SEOを横断した施策が打てるように。外注費が30〜50%削減され、そのコストを戦略人材の採用・育成に再投資する企業が競合優位を確立。'},
+    {y:'2029〜2030',head:'マーケ専任1〜2名でエンタープライズ並みの実行力を持つ時代',text:'AIが定型業務を自律実行。人間の専任マーケターは「何を・誰に・なぜ伝えるか」の意思決定と、顧客・パートナーとの関係構築のみに集中。「マーケ人員を増やす」より「AIと専任の組み合わせを最適化する」が経営課題になる。'}]},
+  ent:{name:'エンタープライズ（500名〜）',stats:[['マーケ専任人員','5〜20名＋大手代理店'],['実態','社内は管理・承認役。実務は代理店が担う構造'],['代理店依存度','非常に高。長期契約・担当者も固定化'],['ツール予算','月100万〜数千万円（広告費除く）'],['意思決定','委員会・役員承認・法務確認が必要']],challenge:'社内マーケ担当は5〜20名いても、実務の大半は大手代理店・グループ会社・専門ベンダーが担っており、社内担当は管理・承認・報告が主な仕事になっている。AI導入を検討しても「代理店との契約・利害関係」「法務・情報管理の壁」「どの部署が主導するか」の調整に時間がかかり、意思決定が遅い。現場の担当者はAIを使いたいが、組織として動けない状態。',ytl:[
+    {y:'2025',now:true,head:'現場担当者がAIを使い始めるが、組織としては「PoC待ち」',text:'デジタルマーケや先進的な部署でAIの試験導入（PoC）を検討。ただし「全社展開」には至らず、情報管理ポリシーの整備・承認フローの設計が先行課題に。代理店もAI活用を提案し始めるが、クライアント側の受け入れ体制が追いつかない。'},
+    {y:'2026',head:'全社AI方針策定。CDO・DX推進室が主導して整備',text:'AI利用ガイドライン・使用可能ツールホワイトリスト・全社員向けリテラシー研修を整備。特定業務（議事録・レポート・コンテンツ初稿）のAI活用を公式承認。代理店との役割再定義の議論を正式に開始。広告費・制作費の見直し交渉が始まる企業も。'},
+    {y:'2027',head:'データ基盤統合が本格化。ファーストパーティデータの活用へ',text:'CDP（顧客データ基盤）の整備・広告×CRM×Web×店舗データの統合が進む。AIパーソナライゼーション・予測分析を一部本番導入。社内担当者のスキルアップと、代理店への依存範囲の見直しが同時進行する。'},
+    {y:'2028',head:'定型業務がAI化完了。社内担当者の役割が「管理・承認」から「設計」へ',text:'レポート・入稿・定型コンテンツ・一次分析がAI自動化。社内マーケ担当の仕事が「代理店管理・承認」から「マーケ戦略設計・AIシステム監督・組織変革推進」へシフト。代理店はコンサル機能のみに絞られ、制作・運用費が大幅削減される。'},
+    {y:'2029〜2030',head:'「データとブランドを持つ大企業」とAIの組み合わせが最強に',text:'意思決定の遅さという弱点を克服できた企業は、膨大な顧客データ×ブランド資産×AIの組み合わせで圧倒的優位を確立。社内マーケ担当は少数精鋭の「AI×マーケ設計者」へ。変革できなかった企業はミドル企業に顧客体験・スピード・コストで追い抜かれるリスク。'}]}
+};
+
+const IND={
+  ec:{name:'EC・D2C',stats:[['組織中核職種','広告運用・CRM・データ分析'],['代理店依存','低〜中（インハウス傾向）'],['AI移行速度','最速'],['マーケ人員規模','5〜50名']],challenge:'ROAS至上主義からブランド価値へのシフト。Cookie規制強化でリターゲティング効率が低下。',ytl:[
+    {y:'2025',now:true,head:'Google P-MAX・Meta Advantage+が標準化。入稿作業が激減',text:'人間の入稿管理業務はほぼ不要に。AIが商品画像×コピーを自動生成してA/Bテストを高速化。'},
+    {y:'2026',head:'コンテンツ生成×SEO×CRMのAI統合。1人マーケ担当が全チャネルをカバー',text:'商品説明文・LP・ブログ・メール・SNS投稿を統合的にAI生成。EC事業者のマーケ費用構造が根本から変わる。'},
+    {y:'2027',head:'パーソナライゼーションが「個客単位」へ。AIがLTV予測・ロイヤルティ設計',text:'AIが購買履歴・閲覧行動・外部データを統合し「この顧客に今何を送るか」をリアルタイム判断。'},
+    {y:'2028',head:'EC×ブランド戦略の融合。数字だけでは差別化できない時代',text:'ROAS最適化はAIが前提。人間マーケターの価値はブランドストーリー・コミュニティ・体験設計へ。'},
+    {y:'2029〜2030',head:'AI自律ECマーケの完成形。人間は「ブランドと顧客との関係」設計者',text:'AIエージェントが広告・コンテンツ・メール・SNS・SEOを24時間自動運用。EC企業のマーケ人員は現在の30〜50%になる可能性。'}]},
+  saas:{name:'BtoB SaaS',stats:[['組織中核職種','コンテンツ・SEO・ABM・デマンドジェネ'],['代理店依存','低（インハウス中心）'],['AI移行速度','速い'],['マーケ人員規模','3〜30名']],challenge:'リード獲得コストの上昇とリード品質の両立。コンテンツSEOのAI生成化による質の低下懸念。',ytl:[
+    {y:'2025',now:true,head:'コンテンツ生成とSEOのAI補助が本格化',text:'ブログ・ホワイトペーパー・事例コンテンツの初稿をAIが生成。SEOキーワード調査・競合分析もAI支援。'},
+    {y:'2026',head:'AI Overviewの台頭でSEO戦略の大転換',text:'汎用コンテンツへのクリック率が激減。BtoB SaaSのSEO戦略は「専門家知見・事例・データ」ベースへシフト。'},
+    {y:'2027',head:'ABMのAI化。ターゲット企業のシグナル検知',text:'AIがターゲット企業のWebサイト・求人票・プレスリリース等を解析し「今が商談タイミング」を自動判定。'},
+    {y:'2028',head:'コミュニティ×PLGが主流。マーケの役割がCXへ拡張',text:'AI主導でリード獲得・ナーチャリングが自動化される中、差別化はユーザーコミュニティ・プロダクト体験・CSへ。'},
+    {y:'2029〜2030',head:'AIがBtoB SaaSのGTM戦略まで支援。マーケと事業開発の融合',text:'新市場参入・新機能リリース・競合対策をAIがデータ分析して提案。マーケ部門はAI専門家×ビジネス専門家の少数精鋭に。'}]},
+  fmcg:{name:'消費財・FMCG',stats:[['組織中核職種','ブランドMG・トレードMK・デジタルMK'],['代理店依存','高（統合代理店・媒体代理店）'],['AI移行速度','中程度'],['マーケ人員規模','20〜200名']],challenge:'小売・量販店との関係維持とデジタル化のバランス。ブランドセーフティへの強いこだわりがAI活用を慎重にさせる。',ytl:[
+    {y:'2025',now:true,head:'デジタル広告の自動最適化導入と代理店との役割再定義開始',text:'Google・Metaの自動入札・クリエイティブ最適化を代理店経由で導入開始。'},
+    {y:'2026',head:'コンシューマーインサイト収集のAI化。調査コスト削減と高速化',text:'消費者調査・SNS分析・競合トレンド把握をAIが自動収集・サマリー。インサイト収集にかかる時間が1/5程度に。'},
+    {y:'2027',head:'パーソナライゼーションとリテールメディアの融合',text:'小売チェーンとのデータ連携が進み、購買データ×自社データでパーソナライズドマーケを展開。'},
+    {y:'2028',head:'代理店のコンサル化完了。クリエイティブ制作はAI+人間ハイブリッドが標準',text:'TV CM・OOH以外のデジタルクリエイティブは大半がAI生成+人間監修に。'},
+    {y:'2029〜2030',head:'ブランドエクイティ管理がAIと人間の協働に',text:'消費者とのコミュニケーション設計・媒体買付・クリエイティブ改善はAIが主導。人間の仕事は「このブランドが社会に何を意味するか」の管理のみ。'}]},
+  fin:{name:'金融・保険',stats:[['組織中核職種','デジタルMK・コンテンツ・CRM'],['代理店依存','中〜高（コンプライアンス管理込み）'],['AI移行速度','遅い'],['マーケ人員規模','10〜100名']],challenge:'金融商品広告規制・薬機法類似の厳格なコンテンツ審査。AI生成コンテンツの法的責任所在が不明確。',ytl:[
+    {y:'2025',now:true,head:'AI活用のコンプライアンス整備が先行',text:'「どのAIツールを誰が使ってよいか」「AI生成コンテンツの審査フローは何か」を法務・コンプライアンス部門と整備。'},
+    {y:'2026',head:'コンテンツ審査にAI補助を導入。スピードと正確性の両立',text:'コンプライアンス審査プロセスにAIを投入し、チェック漏れ検知・表現NGワード検出を自動化。'},
+    {y:'2027',head:'パーソナライズドCRM・保険提案のAI化が進行',text:'顧客の契約状況・ライフイベントに基づくCRMコミュニケーションをAIが設計・配信。最終提案は人間が担う形が続く。'},
+    {y:'2028',head:'デジタルチャネルの最適化はAIが担当。規制内でのパーソナライゼーション拡大',text:'コンプライアンス人材は減らず、AI×法務×マーケを統合する「リーガルマーケター」需要が生まれる。'},
+    {y:'2029〜2030',head:'金融マーケの「AIでできること・できないこと」の境界が確立',text:'デジタルマーケの実行業務は95%AI化。金融マーケターの価値は「規制理解×デジタル×顧客コミュニケーション」の統合人材へ。'}]},
+  media:{name:'メディア・エンタメ',stats:[['組織中核職種','コンテンツ制作・編集・SNS・動画・SEO'],['代理店依存','低（自社制作中心）'],['AI移行速度','速い'],['マーケ人員規模','10〜500名']],challenge:'AI生成コンテンツの著作権・真正性問題。クリエイターとAIの共存・摩擦。コンテンツ品質の均質化によるブランド差別化の難化。',ytl:[
+    {y:'2025',now:true,head:'AI生成コンテンツが量産型メディアを席巻。編集者の役割が「監修者」へ',text:'SEOアフィリエイト記事・まとめ記事の大半がAI生成に移行。クオリティメディアは独自取材・インタビューで差別化。'},
+    {y:'2026',head:'動画・音声コンテンツのAI生成が台頭。ショート動画はAI制作が標準化',text:'Runway・Soraなどのツールが実用化し、SNS向けショート動画のAI生成が標準化。'},
+    {y:'2027',head:'パーソナライゼーション配信とAIレコメンドが収益モデルを変える',text:'ユーザーごとに最適なコンテンツをAIがリアルタイム配信。コンテンツマーケとプロダクトの境界が消える。'},
+    {y:'2028',head:'AIと人間クリエイターの「共創」が主流',text:'AIが初稿・素材・編集を担い、人間クリエイターがディレクションと最終判断を担うモデルが定着。'},
+    {y:'2029〜2030',head:'メディアの価値が「情報量」から「信頼・体験・コミュニティ」へ完全シフト',text:'情報量・速度はAIが圧倒するため、人間が作るメディアの価値は信頼性・独自視点・コミュニティ帰属感に集約。'}]},
+  retail:{name:'リテール・小売',stats:[['組織中核職種','チラシ・販促・デジタルMK・CRM'],['代理店依存','中（チラシ制作・Web制作）'],['AI移行速度','中程度'],['マーケ人員規模','5〜50名']],challenge:'チラシ・紙媒体からデジタルへの移行が中途半端。店舗スタッフのデジタルリテラシーが低く、オムニチャネル戦略の実行が難しい。',ytl:[
+    {y:'2025',now:true,head:'チラシ・POPのAI制作補助とデジタル広告の自動化が始まる',text:'Canva AI等でチラシ・POPの制作コストが削減。Meta・Google広告の自動最適化が導入され、販促担当の作業工数が減少。'},
+    {y:'2026',head:'EC×店舗のデータ統合が本格化。顧客IDの一元管理スタート',text:'ポイントカード・EC購買・デジタル広告クリックを統合したカスタマーIDの整備が進む。紙チラシが削減され、デジタル版・LINE配信等にシフト。'},
+    {y:'2027',head:'パーソナライズドプロモーションがAI主導に',text:'「この顧客に今週何を送るか」をAIが購買データから判断し自動配信。LINE・メール・アプリPUSHのパーソナライゼーションが標準化。'},
+    {y:'2028',head:'OMOがAIで加速。体験設計が人間の仕事に',text:'AIがデジタル接点を最適化する一方、人間が担うのは「店舗体験の設計・コミュニティ形成・スタッフとの関係」へ。'},
+    {y:'2029〜2030',head:'小売マーケの「体験・地域コミュニティ・信頼」が最後の差別化軸',text:'EC・デジタルプロモーション・CRMはAIが最適化。人間マーケターは「なぜこの店に来るのか」「地域とどう繋がるか」の設計者へ。'}]},
+  med:{name:'医療・ヘルスケア',stats:[['組織中核職種','コンテンツ・SEO・デジタル広告・CRM'],['代理店依存','高（薬機法対応込み）'],['AI移行速度','最も遅い'],['マーケ人員規模','3〜30名']],challenge:'薬機法・医療広告ガイドラインによるコンテンツ表現の厳格な制約。AI生成コンテンツの医学的正確性の担保。',ytl:[
+    {y:'2025',now:true,head:'AI活用は社内ドキュメント・議事録・内部リサーチに限定',text:'外部向けコンテンツへのAI活用はリスクから慎重。内部業務からAI活用を開始。'},
+    {y:'2026',head:'一般消費者向けコンテンツにAI補助を限定導入。医師監修フローが必須化',text:'健康情報コンテンツ・FAQ等の一般向けコンテンツでAI初稿生成を開始。ただし必ず専門家監修フローを経ることが前提。'},
+    {y:'2027',head:'デジタル広告の自動最適化導入。薬機法対応の審査AIが登場',text:'医療広告ガイドライン対応の専門AI（薬機法NGワード検出・表現チェック）が普及し始める。'},
+    {y:'2028',head:'患者・消費者向けパーソナライゼーションが始動',text:'同意管理を徹底した上でのパーソナライズドCRMが一部で実現。AIが「次に伝えるべき健康情報」を判断し配信。'},
+    {y:'2029〜2030',head:'医療マーケの「AIができること・できないこと」の整理が完成',text:'情報提供・予防啓発・受診促進のデジタルマーケはAI主導に。患者との信頼関係構築・専門的アドバイスは人間専門家が担い続ける。'}]}
+};
+
+const AK={
+  '2025':{head:'フェーズ0（2025）— 信頼獲得。「使って変わる」を実証する',body:'優先ターゲット：広告オペレーション担当・SEOライター・コンテンツマーケターなど、AI代替率が高く今すぐ業務効率化ニーズが切実な職種。\n\n提供価値：「今の仕事の○%がAIで自動化できる」を実証できるデモ・トライアル設計。入稿レポート自動化・記事初稿生成・広告文案作成など、ROIが見えやすい機能から提供。\n\n重要KPI：「使い始めて1週間で業務時間が○時間削減」という具体的体験を設計。口コミ・紹介が起きる体験設計が最重要。\n\nコンテンツ戦略：「職種別AI活用ガイド」「2030年マーケター生存マップ」などの不安×希望に応えるコンテンツで認知獲得。'},
+  '2026':{head:'フェーズ1（2026）— チーム展開。「個人」から「組織の武器」へ',body:'優先ターゲット：ミドル企業のマーケ担当者・チームリーダー。「チームでAIを使いたいが方法がわからない」層。\n\n提供価値の拡張：個人利用から「チーム×ワークフロー」へ。職種別の業務フローにAIを組み込む設計支援機能を追加。\n\n新機能の方向性：①AI業務分担診断 ②ワークフロー自動化テンプレート（職種別） ③チームの生産性ダッシュボード。\n\nパートナー戦略：マーケ代理店・コンサル会社との協業開始。ホワイトラベル展開も検討。'},
+  '2027':{head:'フェーズ2（2027）— プラットフォーム化。マーケ組織全体のAI化設計',body:'優先ターゲット：ミドル〜エンタープライズのマーケ部門長・CDO・マーケコンサルタント。\n\n提供価値の拡張：「個別の業務自動化」から「マーケ組織全体のAI化設計」へ。\n\n新機能の方向性：①マーケ業務のAI移行ロードマップ生成（組織規模・業種別カスタマイズ） ②複数AIエージェントのオーケストレーション ③ROI可視化・レポーティング自動化。\n\n業種特化：EC×広告、BtoB SaaS×コンテンツ/ABM、FMCG×ブランドセーフティなど、業種特化パッケージを展開。'},
+  '2028':{head:'フェーズ3（2028）— 人材育成エコシステム。マーケターの進化を伴走',body:'優先ターゲット：AIシフトにより役割再定義を迫られる全マーケ人材。特にオペレーション系からの転換を支援。\n\n新機能の方向性：①AIネイティブマーケター認定プログラム ②職種転換支援（例：広告オペ→AI広告戦略家への育成パス） ③企業向け社員研修・変革支援サービス。\n\nエコシステム：akahai agentを使いこなせるマーケターのコミュニティ形成。「akahai認定マーケター」が採用市場で価値を持つブランド化を目指す。'},
+  '2030':{head:'フェーズ4（2029〜2030）— 業界デファクト化。マーケのOS',body:'目指すポジション：SalesforceがセールスとCRMで果たした役割を、akahai agentはAI×マーケティングで担う。「マーケ組織のOS」としての地位。\n\n提供価値の完成形：①AI自律エージェント（人間の監督下で広告・コンテンツ・分析を自律実行） ②組織設計コンサルティング ③マーケ人材育成・認定エコシステム。\n\nグローバル展開の選択肢：日本市場での実績を基盤に、アジア圏（台湾・韓国・東南アジア）へのグローバル展開を検討。\n\n最重要差別化軸：「マーケティング業界への深い解像度」。汎用AI企業が追いつけない業種別・職種別の専門知識と実績データが参入障壁となる。'}
+};
+
+function ytlHtml(items){
+  return '<div class="ytl">'+items.map(it=>`
+    <div class="ytl-item">
+      <div class="ytl-dot${it.now?' now':''}"></div>
+      <p class="ytl-year">${it.y}年</p>
+      <p class="ytl-head">${it.head}</p>
+      <p class="ytl-text">${it.text}</p>
+    </div>`).join('')+'</div>';
+}
+
+function statsHtml(stats){
+  return stats.map(([l,v])=>`<div class="srow"><span class="sl">${l}</span><span class="sv">${v}</span></div>`).join('');
+}
+
+function renderS1(key){
+  const j=JOBS.find(x=>x.k===key);
+  const fc=j.rl==='h'?'fh':j.rl==='m'?'fm':'fl';
+  const bd=j.rl==='h'?'bd-r':j.rl==='m'?'bd-y':'bd-g';
+  const rn=j.rl==='h'?'高リスク':j.rl==='m'?'中リスク':'低リスク';
+  document.getElementById('s1-panel').innerHTML=`
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
+        <p class="card-title" style="margin:0">${j.n}</p>
+        <span class="badge ${bd}">${rn} ${j.risk}%</span>
+      </div>
+      <div class="rbar-wrap">
+        <div class="rbar-head"><span>AI代替可能性（2030年推定）</span><span>${j.risk}%</span></div>
+        <div class="rbar-track"><div class="rbar-fill ${fc}" style="width:${j.risk}%"></div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-top:.8rem">
+        <div><p class="tlabel inc">増える業務</p><ul class="tlist">${j.inc.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div><p class="tlabel dec">減る業務</p><ul class="tlist">${j.dec.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div><p class="tlabel rem">代替できない業務</p><ul class="tlist">${j.rem.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      </div>
+    </div>`;
+}
+
+function renderS2(key){
+  const j=JOBS.find(x=>x.k===key);
+  document.getElementById('s2-panel').innerHTML=`
+    <div class="card">
+      <p class="card-title">${j.n} — 年次ロードマップ</p>
+      ${ytlHtml(j.ytl)}
+    </div>`;
+}
+
+function renderS5(key){
+  const j=JOBS.find(x=>x.k===key);
+  const bd=j.rl==='h'?'bd-r':j.rl==='m'?'bd-y':'bd-g';
+  document.getElementById('s5-panel').innerHTML=`
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:.8rem">
+        <p class="card-title" style="margin:0">${j.n}</p>
+        <span class="badge ${bd}">AI代替 ${j.risk}%</span>
+      </div>
+      ${ytlHtml(j.ytl)}
+    </div>`;
+}
+
+function scaleChip(btn,key){
+  btn.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  const d=SZ[key];
+  document.getElementById('s3-panel').innerHTML=`
+    <div class="g2" style="margin-bottom:.8rem">
+      <div class="card"><p class="card-title">組織実態</p>${statsHtml(d.stats)}</div>
+      <div class="card"><p class="card-title">主な課題</p><p class="card-body">${d.challenge}</p></div>
+    </div>
+    <div class="card"><p class="card-title">${d.name} — 年次ロードマップ</p>${ytlHtml(d.ytl)}</div>`;
+}
+
+function indChip(btn,key){
+  btn.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  const d=IND[key];
+  document.getElementById('s4-panel').innerHTML=`
+    <div class="g2" style="margin-bottom:.8rem">
+      <div class="card"><p class="card-title">組織実態</p>${statsHtml(d.stats)}</div>
+      <div class="card"><p class="card-title">業界特有の課題</p><p class="card-body">${d.challenge}</p></div>
+    </div>
+    <div class="card"><p class="card-title">${d.name} — 年次ロードマップ</p>${ytlHtml(d.ytl)}</div>`;
+}
+
+function akChip(btn,key){
+  btn.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  const d=AK[key];
+  document.getElementById('s7-panel').innerHTML=`
+    <div class="card">
+      <p class="card-title">${d.head}</p>
+      <p class="card-body" style="white-space:pre-line;margin-top:.5rem">${d.body}</p>
+    </div>`;
+}
+
+function showSec(id,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function filterRisk(level,btn){
+  document.querySelectorAll('.rf-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.rm-row').forEach(r=>{
+    r.style.display=(level==='all'||r.dataset.rl===level)?'flex':'none';
+  });
+}
+
+function buildMatrix(){
+  const el=document.getElementById('risk-matrix');
+  const sorted=[...JOBS].sort((a,b)=>b.risk-a.risk);
+  el.innerHTML=sorted.map(j=>{
+    const c=j.rl==='h'?'#E24B4A':j.rl==='m'?'#BA7517':'#3B6D11';
+    return `<div class="rm-row" data-rl="${j.rl}">
+      <span class="rm-label">${j.n}</span>
+      <div class="rm-bar-wrap">
+        <div class="rm-track"><div class="rm-fill" style="width:${j.risk}%;background:${c}"></div></div>
+        <span class="rm-pct" style="color:${c}">${j.risk}%</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buildChips(){
+  const c1=document.getElementById('chips-s1');
+  const c2=document.getElementById('chips-s2');
+  const c5=document.getElementById('chips-s5');
+  JOBS.forEach((j,i)=>{
+    [[c1,renderS1],[c2,renderS2],[c5,renderS5]].forEach(([el,fn])=>{
+      const b=document.createElement('button');
+      b.className='chip'+(i===0?' active':'');
+      b.textContent=j.n;
+      b.onclick=function(){
+        el.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        fn(j.k);
+      };
+      el.appendChild(b);
+    });
+  });
+}
+
+// ===== S8: Business Model Transformation =====
+const BIZ = {
+  val: {
+    title: '価値提案',
+    urgency: '最重要・今すぐ変える',
+    uc: 'bd-r',
+    from: '「必要な職種・スキルを持つ人材を紹介・マッチングする」',
+    to: '「AI時代にクライアントのマーケ組織に必要な人材構成を設計し、その人材を届ける」',
+    detail: 'クライアントは「SEOライターが欲しい」と言うが、本当のニーズは「SEOで集客を伸ばしたい」。2027年以降、その集客の手段がAIに変わる。だから今から「職種名のマッチング」ではなく「事業課題から逆算した人材提案」にシフトする必要がある。これはクライアントのコンサルタント的役割の担い方になることを意味する。',
+    actions: ['クライアントへのヒアリング設計を「職種依頼」→「事業課題起点」に変更','提案資料に「この職種のAI代替リスク」と「2年後に必要なスキル」を追記','「今欲しい人材」と「将来必要な人材」のギャップを可視化した提案を試験導入']
+  },
+  supply: {
+    title: '供給サイド（登録人材）',
+    urgency: '緊急・2026年内に着手',
+    uc: 'bd-r',
+    from: '職種名×スキルタグでの人材登録・DB管理',
+    to: 'AI活用能力×専門性×転換ポテンシャルの3軸評価',
+    detail: '現在の登録データベースに「AIを使えるか」という情報がほぼない。これが最大の問題。今すぐ全登録者のAIリテラシーを把握し直す必要がある。同時に、新規登録者にはAI活用の実績・習熟度・学習意欲を必須ヒアリング項目として追加する。',
+    actions: ['既存登録者へAIリテラシーアンケートを実施（使っているツール・活用場面・自己評価）','新規登録フローにAI活用ヒアリングを必須化','AI活用度を★1〜5で可視化する評価軸をDBに追加','高リスク職種（広告オペ・SEOライター）の新規登録を段階縮小']
+  },
+  demand: {
+    title: '需要サイド（クライアント）',
+    urgency: '重要・2026年までに設計',
+    uc: 'bd-y',
+    from: '「○○職種を×人紹介してほしい」への対応',
+    to: '「マーケ組織のAI化に伴う人材再設計」の提案',
+    detail: 'クライアントの多くはまだ「何が変わるかわかっていない」段階にある。akahai agentがその変化を先んじて理解し、「今あなたの組織に必要な人材はこれです、2年後はこうなります」という提案ができれば、競合他社との圧倒的な差別化になる。コンサルティング的な関与が増えるため、クライアント担当者のスキルセットも変える必要がある。',
+    actions: ['クライアント向けに「マーケ組織AI化診断」を無料提供（入口商品として設計）','業種別・規模別の「2030年マーケ組織モデル」を提案資料化','既存クライアントへの定期レビューに「人材ポートフォリオ見直し提案」を追加','AI移行が早い業種（EC・SaaS）を優先ターゲットに設定']
+  },
+  fee: {
+    title: '収益モデル',
+    urgency: '中期・2027年までに移行',
+    uc: 'bd-y',
+    from: '成功報酬型（紹介料：年収の○%）+ マッチング手数料',
+    to: '成功報酬 + リテイナー（顧問型） + 育成・認定プログラム収益',
+    detail: '現在の「人材を紹介したら終わり」モデルだと、AIシフトで紹介できる人材数が減るにつれ収益が減少する構造的リスクがある。「紹介後も関与し続ける」リテイナーモデルと、「人材を育成して送り出す」プログラム収益を柱として追加することで、1クライアントあたりのLTVを高める。',
+    actions: ['大手クライアント向けにリテイナー型（月次マーケ人材顧問）プランを試験導入','スキル転換・育成プログラムの参加費収益化','「akahai認定」取得支援パッケージの設計と価格設定','成功報酬の料率見直し（高付加価値職種は料率UP・低スキル職種は引き下げ）']
+  },
+  screen: {
+    title: 'スクリーニング基準',
+    urgency: '最重要・今すぐ変える',
+    uc: 'bd-r',
+    from: '職種経験年数・実績ポートフォリオ・得意ツール',
+    to: 'AI活用能力 + 学習適応力 + 専門深度 + アウトカム思考',
+    detail: 'これまでの「何年やってきたか・何ができるか」から「AIが広まる中でどう価値を出し続けられるか」への評価軸の転換が急務。特に重要なのは「学習適応力」。過去の実績より、新しいツールや手法をどれだけ速く習得できるかの方が、2030年に向けてはるかに重要な指標になる。',
+    actions: ['スクリーニングシートにAI活用ヒアリング項目を追加（使用ツール・活用場面・成果）','「この1年で習得した新しいスキル・ツール」を必須記載項目に','職種別のAIリテラシー評価テストを設計・試験運用','評価基準を社内で統一し、担当者間のばらつきをなくす']
+  }
+};
+
+const PORT = {
+  exit: [
+    {name:'広告オペレーション（入稿・レポート）',risk:90,action:'新規登録を2026年末までに終了',reason:'入稿・確認・レポート作成の95%以上がAI代替可能。この職種への需要は2027〜2028年に急減する。紹介しても1〜2年で仕事がなくなるリスクが高く、クライアントへの提案としても誠実ではない。',next:'既存登録者にはアドテク専門家・自動化設計者へのキャリア転換支援を提供'},
+    {name:'量産SEOライター（汎用記事特化）',risk:85,action:'新規登録を2026年内に大幅縮小',reason:'汎用キーワード記事・まとめ記事のAI生成が完全に普及済み。発注単価はすでに半減しており、2026年には需要が50%以上消滅する予測。専門知識のない量産ライターを紹介し続けることは、クライアントの信頼を損なう。',next:'専門知識保有者（医療・法務・技術系）はコンテンツストラテジストとして再登録'},
+    {name:'定型広告オペレーション補助（入稿アシスタント等）',risk:88,action:'即時新規登録停止',reason:'補助的な入稿作業・確認業務はすでに大半のプラットフォームで自動化が完了している。クライアントニーズが消滅しつつある。',next:'デジタルマーケ全般のジュニアポジション希望者として再評価・再登録'}
+  ],
+  transform: [
+    {name:'広告運用担当（オペレーション特化）',risk:75,action:'2026〜2027年に「AI広告戦略家」へ転換支援',reason:'入札・設定作業は代替されるが、戦略設計・クリエイティブ判断・予算配分は人間が担う。スキル転換できれば市場価値は維持される。',next:'AIツール活用研修＋戦略設計スキルの証明プログラムを提供'},
+    {name:'コンテンツマーケター（量産・SEO記事特化）',risk:60,action:'コンテンツストラテジストへの転換を促進',reason:'量産執筆はAI代替されるが、コンテンツ戦略設計・編集監修・ブランドナラティブ構築は高需要が続く。',next:'AI活用コンテンツ制作スキル＋戦略設計能力の習得支援'},
+    {name:'SNSマーケター（投稿・運用特化）',risk:55,action:'コミュニティマネージャー・ブランドマネージャーへ転換',reason:'定型投稿・分析レポートはAI化されるが、コミュニティ設計・危機対応・インフルエンサー関係は人間の仕事として残る。',next:'コミュニティ設計・UGC活用・ブランドボイス管理スキルの評価強化'},
+    {name:'SEOコンサルタント（テクニカル特化）',risk:50,action:'「検索プレゼンス戦略家」への転換支援',reason:'テクニカル診断はAI自動化されるが、GEO（生成AI最適化）・ブランドオーソリティ設計は新たな高需要領域。',next:'AI検索・GEO・PR統合戦略のスキル評価と案件紹介強化'}
+  ],
+  grow: [
+    {name:'ストラテジックプランナー',risk:25,priority:'最優先強化',reason:'AI時代に最も希少価値が高まる職種。人間心理・文化的洞察・クリエイティブ跳躍はAIが代替できない。現在の登録者数が少ない可能性が高く、積極的な採用・登録促進が必要。',action:'業界交流会・代理店人脈を通じた積極スカウト＋高単価案件の優先紹介'},
+    {name:'マーケティングコンサルタント',risk:30,priority:'最優先強化',reason:'AI変革支援コンサルの需要が急増中。クライアントの「AIをマーケにどう使うか」という相談に答えられる人材が圧倒的に不足している。',action:'DX・AI領域の経験者を積極スカウト。組織変革実績のある人材を特にターゲット'},
+    {name:'データアナリスト（マーケ×AI）',risk:40,priority:'強化',reason:'AIモデル設計・評価・ビジネス翻訳ができるアナリストの需要は2030年まで増加し続ける。マーケ文脈でのデータ活用に特化した専門家が不足。',action:'ML/AI知識を持つマーケ経験者の登録促進。評価基準をAIスキル重視に更新'},
+    {name:'WEBディレクター（プロダクト思考型）',risk:35,priority:'強化',reason:'AI実装を管理・評価できるDXリーダーとしての需要が増加。制作管理だけでなく事業成果設計ができる人材が高く評価される。',action:'PM・グロースハック経験者を積極登録。プロダクト思考の評価項目を追加'}
+  ],
+  new: [
+    {name:'AIネイティブマーケター（新カテゴリ）',priority:'2026年までに立ち上げ',desc:'職種横断で「AIを使いこなしてマーケ成果を出せる人材」を定義する新カテゴリ。特定の職種名ではなく、AI活用能力×マーケ専門知識×アウトカム思考の3軸で評価・登録。akahai独自の認定基準を設ける。',who:'広告・コンテンツ・CRM・SEO等の実務経験があり、AIツールを業務で実際に活用している人材'},
+    {name:'マーケDXコンサルタント（新カテゴリ）',priority:'2026〜2027年に立ち上げ',desc:'企業のマーケ組織AI化を伴走するコンサルタント。ツール選定・ワークフロー設計・人材育成・ROI測定まで担える人材。従来の「マーケコンサル」より実装・変革推進に特化。',who:'マーケ実務経験＋AIツール実装経験＋組織変革経験を持つ人材（兼務フリーランス需要が高い）'},
+    {name:'CX設計者（カスタマーエクスペリエンス）（新カテゴリ）',priority:'2027〜2028年に立ち上げ',desc:'マーケ×CS×プロダクトを横断して顧客体験を設計する人材。AIがオペレーションを担う中で、人間がどんな体験を設計するかを決める役割。CRM・UI/UX・コミュニティを統合的に設計できる。',who:'CRM・UX・カスタマーサクセス経験者でマーケ理解がある人材'}
+  ]
+};
+
+const TALENT = {
+  now: [
+    {role:'AI×マーケ評価設計者',num:'1名（兼務可）',must:'広告・コンテンツ・SEO等のマーケ実務経験5年以上 ＋ AIツール（Claude/ChatGPT/各種マーケAIツール）の深い活用経験',why:'登録人材・求職者のAIリテラシーを正確に評価するための「評価基準」を設計できる人材。この人がいないと登録者のAI能力を正しく判断できない。外部からスカウトか、既存スタッフを専任化させる。'},
+    {role:'カスタマーサクセス担当（AI変革伴走型）',num:'1〜2名',must:'マーケ組織のインハウス経験 または 代理店でのAP経験 ＋ AI活用の実践経験 ＋ クライアントの課題を構造化して提案できるコンサル的スキル',why:'クライアントに「今あなたの組織に何が必要か」を提案し、紹介後も伴走する役割。今の「紹介したら終わり」モデルを変えるための中核人材。'},
+    {role:'コミュニティ・育成プログラム担当',num:'1名',must:'マーケ業界の人脈・コミュニティ運営経験 ＋ 研修・勉強会の企画・運営経験 ＋ AIリテラシー',why:'登録人材のスキル転換支援・コミュニティ運営・認定プログラムの設計を担う。2026〜2028年の転換期に最も重要な役割の一つ。'}
+  ],
+  mid: [
+    {role:'マーケDXコンサルタント（インハウス）',num:'1〜2名',must:'マーケ戦略×AI実装×組織変革の3つを経験した人材。大手代理店・コンサルファーム・事業会社マーケ部門長クラス。',why:'クライアントへの「マーケ組織AI化設計支援」サービスを実際に提供できる人材。外部コンサルとして紹介するだけでなく、akahai自体がこの価値を提供できるようにするための内部人材。'},
+    {role:'データ・プロダクト担当',num:'1名',must:'マーケデータ分析経験 ＋ AIツール・API連携の実装経験 ＋ プラットフォーム設計の知識',why:'登録者DB・マッチングロジック・AI評価ツールの設計・改善を担う。「AIリテラシースコア」などを可視化するプロダクト機能を内製するために必要。'},
+    {role:'コンテンツ・PR担当（思想リーダーシップ）',num:'1名',must:'マーケ業界への深い理解 ＋ コンテンツ発信経験（ブログ・SNS・メディア寄稿） ＋ AIトレンドへの高い感度',why:'「AIとマーケターの関係」「2030年のマーケ組織」などのThought Leadershipコンテンツを発信し、akahai agentのブランドを業界で確立するための人材。'}
+  ],
+  future: [
+    {role:'認定プログラムディレクター',num:'1名',must:'企業研修・資格制度の設計経験 ＋ マーケ業界の専門知識 ＋ AIリテラシー ＋ 教育コンテンツ設計スキル',why:'「akahai認定AIネイティブマーケター」プログラムを業界標準として確立するための専任ディレクター。認定基準・カリキュラム・試験設計・認定者フォローアップを統括。'},
+    {role:'業界アライアンス担当',num:'1名',must:'マーケ業界団体・メディア・大学・企業研修会社との人脈 ＋ パートナーシップ構築経験',why:'認定プログラムの業界認知を拡大するためのアライアンス構築担当。メディア連携・大学連携・企業研修連携を通じてakahai認定の価値を社会に定着させる。'},
+    {role:'グローバル展開担当',num:'1名（検討段階）',must:'アジア圏（台湾・韓国・東南アジア）のマーケ業界知識 ＋ 多言語対応 ＋ 海外事業開発経験',why:'日本市場での実績を基盤にアジア展開を検討する段階で必要。まずは台湾・韓国のデジタルマーケ業界との接点を作ることから始める。'}
+  ]
+};
+
+function renderBiz(key) {
+  const d = BIZ[key];
+  document.getElementById('biz-panel').innerHTML = `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
+        <p class="card-title" style="margin:0">${d.title}</p>
+        <span class="badge ${d.uc}">${d.urgency}</span>
+      </div>
+      <div class="arrow-row">
+        <div class="arrow-from"><div class="arrow-tag">現在</div>${d.from}</div>
+        <i class="ti ti-arrow-right arrow-icon" aria-hidden="true"></i>
+        <div class="arrow-to"><div class="arrow-tag-to">目指す姿</div>${d.to}</div>
+      </div>
+      <p class="card-body" style="margin-bottom:.8rem">${d.detail}</p>
+      <p style="font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">具体的なアクション</p>
+      ${d.actions.map(a=>`<div class="action-line"><span class="action-arrow">→</span><span class="action-text">${a}</span></div>`).join('')}
+    </div>`;
+}
+
+function renderPort(key) {
+  const items = PORT[key];
+  let html = '';
+  if (key === 'exit') {
+    html = items.map(d=>`
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
+          <p class="card-title" style="margin:0">${d.name}</p>
+          <span class="badge bd-r">AI代替 ${d.risk}%</span>
+        </div>
+        <div class="meter-row">
+          <span class="meter-label">代替リスク</span>
+          <div class="meter-track"><div class="meter-fill" style="width:${d.risk}%;background:#E24B4A"></div></div>
+        </div>
+        <div class="kv-line"><span class="badge bd-r kv-tag">判断</span><span style="font-size:12px;font-weight:500">${d.action}</span></div>
+        <p class="card-body" style="margin-bottom:.5rem">${d.reason}</p>
+        <div class="kv-line"><span class="badge bd-p kv-tag">移行先</span><span class="kv-text">${d.next}</span></div>
+      </div>`).join('');
+  } else if (key === 'transform') {
+    html = items.map(d=>`
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
+          <p class="card-title" style="margin:0">${d.name}</p>
+          <span class="badge bd-y">AI代替 ${d.risk}% / 転換必要</span>
+        </div>
+        <div class="kv-line"><span class="badge bd-y kv-tag">方針</span><span style="font-size:12px;font-weight:500">${d.action}</span></div>
+        <p class="card-body" style="margin-bottom:.5rem">${d.reason}</p>
+        <div class="kv-line"><span class="badge bd-p kv-tag">支援内容</span><span class="kv-text">${d.next}</span></div>
+      </div>`).join('');
+  } else if (key === 'grow') {
+    html = items.map(d=>`
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
+          <p class="card-title" style="margin:0">${d.name}</p>
+          <span class="badge bd-g">${d.priority}</span>
+        </div>
+        <p class="card-body" style="margin-bottom:.5rem">${d.reason}</p>
+        <div class="kv-line"><span class="badge bd-p kv-tag">アクション</span><span class="kv-text">${d.action}</span></div>
+      </div>`).join('');
+  } else {
+    html = items.map(d=>`
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
+          <p class="card-title" style="margin:0">${d.name}</p>
+          <span class="badge bd-p">${d.priority}</span>
+        </div>
+        <p class="card-body" style="margin-bottom:.5rem">${d.desc}</p>
+        <div class="kv-line"><span class="badge bd-b kv-tag">対象</span><span class="kv-text">${d.who}</span></div>
+      </div>`).join('');
+  }
+  document.getElementById('port-panel').innerHTML = html;
+}
+
+function renderTalent(key) {
+  const items = TALENT[key];
+  document.getElementById('talent-panel').innerHTML = items.map(d=>`
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
+        <p class="card-title" style="margin:0">${d.role}</p>
+        <span class="badge bd-p">${d.num}</span>
+      </div>
+      <div class="kv-line"><span class="badge bd-b kv-tag">必要条件</span><span class="kv-text">${d.must}</span></div>
+      <div class="kv-line"><span class="badge bd-g kv-tag">なぜ必要か</span><span class="kv-text">${d.why}</span></div>
+    </div>`).join('');
+}
+
+function bizChip(btn, key) {
+  btn.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderBiz(key);
+}
+function portChip(btn, key) {
+  btn.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderPort(key);
+}
+function talentChip(btn, key) {
+  btn.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderTalent(key);
+}
+
+const YEARROAD = {
+  '2026': {
+    kicker: '現在地',
+    title: '今ここ — 土台固め後半戦、人材紹介の仕組み化に着手',
+    sub: '2026年に入り業務委託は18→22件まで成長（年初来+86%）、3〜5月には人材紹介が3件・616万円分発生したが、6月には再びゼロに戻った。件あたり単価は17.0→12.1万円まで軟化後、6月は13.9万円に回復。残り半年（7〜12月）の動き方を再設定するタイミング。',
+    revenue: '業務委託の件あたり単価を13万円以下にしないラインを維持する。人材紹介を「偶発的」から「年内に再現できる」ものに変えるため、事業課題起点の提案フローを下期中に試験導入する。',
+    portfolio: [
+      ['撤退方向（着手）', '広告オペレーション・量産SEOライターの新規登録を下期から絞り始める'],
+      ['強化方向（着手）', 'ストラテジックプランナー・マーケコンサルタント・データアナリストの登録を下期に積極化'],
+      ['新設準備', 'AIネイティブマーケター（新カテゴリ）の設計を下期中に開始、2027年初頭の立ち上げを目指す']
+    ],
+    talent: ['AI×マーケ評価設計者（1名・兼務可・下期採用目標）', 'AI変革伴走型カスタマーサクセス担当（1名・下期検討）'],
+    milestones: ['残り半年で人材紹介を最低1〜2件追加発生させる', '業務委託の件あたり単価を14万円台まで戻す', '登録者DBのAIリテラシー棚卸しを年内に完了する']
+  },
+  '2027': {
+    kicker: null,
+    title: '転換本格化 — 人材紹介を「仕組み」にし、リテイナー型を立ち上げる',
+    sub: '2026年下期に設計した「事業課題起点の提案」を本格運用し、人材紹介を月次で発生させる。同時にヘッドカウントに依存しないリテイナー型収益を新設する。',
+    revenue: '人材紹介を年間10件以上のペースに乗せる。月次リテイナー型（顧問契約）プランを正式導入し、業務委託の単価を18万円台まで引き上げることを目標にする。',
+    portfolio: [
+      ['撤退完了', '広告オペレーション・量産SEOライターの新規登録を終了'],
+      ['新設・運用開始', 'AIネイティブマーケターの運用を開始。マーケDXコンサルタント（新カテゴリ）を立ち上げ'],
+      ['転換支援本格化', '広告運用担当・コンテンツマーケター・SEOコンサルタントのスキル転換プログラムを本格運用']
+    ],
+    talent: ['マーケDXコンサルタント（インハウス・1〜2名）'],
+    milestones: ['リテイナー契約クライアントを3〜5社確保する', '非ヘッドカウント型収益が全体の15%程度に到達する']
+  },
+  '2028': {
+    kicker: null,
+    title: 'エコシステム化 — ブランドプレミアムで単価を防衛する',
+    sub: '「akahai認定マーケター」を収益化し、認定そのものに単価プレミアムを乗せられる状態を作る。同時にCX設計者という新カテゴリを立ち上げる。',
+    revenue: '認定取得支援パッケージを収益化。認定者には優先マッチング・高単価案件アクセス権を付与し、「akahai経由だから高い」という構造を作る。',
+    portfolio: [
+      ['新設', 'CX設計者（カスタマーエクスペリエンス）（新カテゴリ）を立ち上げ']
+    ],
+    talent: ['認定プログラムディレクター（1名）'],
+    milestones: ['認定マーケター登録者数が一定規模に到達する', '認定経由の業務委託単価が非認定より明確に高くなる']
+  },
+  '2030': {
+    kicker: null,
+    title: '業界標準化 — 4本柱の収益構造を完成させる',
+    sub: '業務委託・人材紹介・リテイナー型コンサル・認定プログラムの4本柱が確立し、ヘッドカウント連動の収益比率を大きく下げる。AIシフトに対して構造的な耐性を持つビジネスモデルへの転換が完了する。',
+    revenue: '業務委託は高付加価値職種中心の安定収益、人材紹介は月次安定化、リテイナーと認定プログラムが非ヘッドカウント型収益の柱として機能する状態を目指す。',
+    portfolio: [
+      ['展開', '業界横断でのアライアンス展開、アジア圏へのグローバル展開を検討']
+    ],
+    talent: ['業界アライアンス担当（1名）', 'グローバル展開担当（検討段階）'],
+    milestones: ['「マーケのAI化を考えたらakahai」という業界認知を確立する', '非ヘッドカウント型収益が全体の45%程度に到達する']
+  }
+};
+
+function renderYearRoad(key) {
+  const d = YEARROAD[key];
+  const kickerHtml = d.kicker ? `<span class="kicker">${d.kicker}</span>` : '';
+  const portfolioHtml = d.portfolio.map(([tag,text])=>`<div style="display:flex;gap:6px;margin-bottom:4px;align-items:flex-start"><span class="tagp" style="flex-shrink:0">${tag}</span><span class="card-body" style="margin:0">${text}</span></div>`).join('');
+  const talentHtml = d.talent.length
+    ? `<div class="blk"><p class="blklabel">必要な内部人材</p><div style="display:flex;flex-wrap:wrap;gap:4px">${d.talent.map(t=>`<span class="tagp">${t}</span>`).join('')}</div></div>`
+    : '';
+  document.getElementById('year-panel').innerHTML = `
+    <div class="card">
+      ${kickerHtml}
+      <p class="card-title">${d.title}</p>
+      <p class="card-body" style="margin-bottom:1rem">${d.sub}</p>
+      <div class="blk">
+        <p class="blklabel">収益方向性</p>
+        <p class="card-body">${d.revenue}</p>
+      </div>
+      <div class="blk">
+        <p class="blklabel">職種ポートフォリオ</p>
+        ${portfolioHtml}
+      </div>
+      ${talentHtml}
+      <div class="blk">
+        <p class="blklabel">マイルストーン</p>
+        ${d.milestones.map(m=>`<div class="milerow"><span class="milemark">→</span><span class="miletext">${m}</span></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function yearChip(btn, key) {
+  btn.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderYearRoad(key);
+}
+
+let revChartInstance = null;
+let mixChartInstance = null;
+
+function initBizCharts() {
+  if (revChartInstance) return;
+  const revLabels = ['25/10','25/11','25/12','26/1','26/2','26/3','26/4','26/5','26/6'];
+  const outsourceData = [288,324,320,290,300,308,285,266,264];
+  const recruitData = [0,0,0,0,0,98,250,270,0];
+  const perCaseData = [16.0,17.0,16.0,14.5,15.0,14.7,13.6,12.1,13.9];
+
+  revChartInstance = new Chart(document.getElementById('revChart'), {
+    data: {
+      labels: revLabels,
+      datasets: [
+        { type: 'bar', label: '業務委託', data: outsourceData, backgroundColor: '#7F77DD', stack: 'rev', yAxisID: 'y' },
+        { type: 'bar', label: '人材紹介', data: recruitData, backgroundColor: '#1D9E75', stack: 'rev', yAxisID: 'y' },
+        { type: 'line', label: '業務委託 件あたり単価', data: perCaseData, borderColor: '#D85A30', borderDash: [6,4], borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#D85A30', spanGaps: false, tension: 0.2, yAxisID: 'y1' }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => {
+          const v = ctx.parsed.y;
+          if (v === null || v === undefined) return ctx.dataset.label + ': データなし';
+          return ctx.dataset.label + ': ' + v.toLocaleString() + '万円';
+        }}}
+      },
+      scales: {
+        x: { stacked: true, ticks: { autoSkip: false, maxRotation: 45 } },
+        y: { stacked: true, beginAtZero: true, title: { display: true, text: '月間売上（万円）' } },
+        y1: { position: 'right', beginAtZero: true, grid: { drawOnChartArea: false }, title: { display: true, text: '件あたり単価（万円）' } }
+      }
+    }
+  });
+
+  const mixLabels = ['2026','2027','2028','2029','2030'];
+  const outsourceMix = [80,65,50,40,35];
+  const recruitMix = [15,20,20,20,20];
+  const retainerMix = [5,12,20,25,25];
+  const certMix = [0,3,10,15,20];
+
+  mixChartInstance = new Chart(document.getElementById('mixChart'), {
+    type: 'bar',
+    data: {
+      labels: mixLabels,
+      datasets: [
+        { label: '業務委託', data: outsourceMix, backgroundColor: '#7F77DD', stack: 'mix' },
+        { label: '人材紹介', data: recruitMix, backgroundColor: '#1D9E75', stack: 'mix' },
+        { label: 'リテイナー型コンサル', data: retainerMix, backgroundColor: '#EF9F27', stack: 'mix' },
+        { label: '認定・教育プログラム', data: certMix, backgroundColor: '#D85A30', stack: 'mix' }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y + '%' } }
+      },
+      scales: {
+        x: { stacked: true },
+        y: { stacked: true, min: 0, max: 100, title: { display: true, text: '収益構成比（%）' }, ticks: { callback: v => v + '%' } }
+      }
+    }
+  });
+}
+
+function bizTab(id, btn) {
+  document.querySelectorAll('#s8 .tabpanel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#biztabs .tabnav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'bt0') {
+    initBizCharts();
+    setTimeout(() => {
+      if (revChartInstance) revChartInstance.resize();
+      if (mixChartInstance) mixChartInstance.resize();
+    }, 50);
+  }
+}
+
+renderBiz('val');
+renderPort('exit');
+renderTalent('now');
+renderYearRoad('2026');
+initBizCharts();
+
+buildMatrix();
+buildChips();
+renderS1(JOBS[0].k);
+renderS2(JOBS[0].k);
+renderS5(JOBS[0].k);
+scaleChip(document.querySelector('#s3 .chip'),SZ,'small');
+document.querySelector('#s3 .chip').classList.add('active');
+document.querySelector('#s4 .chip').classList.add('active');
+indChip(document.querySelector('#s4 .chip'),'ec');
+document.querySelector('#s7 .chips .chip').classList.add('active');
+akChip(document.querySelector('#s7 .chips .chip'),'2025');
+</script>
+</body>
+</html>
